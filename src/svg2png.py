@@ -81,17 +81,27 @@ def convert_svg_to_png(src: str, dest: str):
 
 if __name__ == '__main__':
     emoji_list = [
-        "1f600",
-        "1f601",
-        "1f602",
-        "1f603",
-        "1f604",
-        "1f605",
-        "1f606",
-        "1f609",
-        "1f642",
-        "1f643",
-        "1f923",
+        "1F600",
+        "1F601",
+        "1F602",
+        "1F923",
+        "1F603",
+        "1F604",
+        "1F605",
+        "1F606",
+        "1F609",
+        "1F60A",
+        "1F60B",
+        "1F60E",
+        "1F60D",
+        "1F618",
+        "1F970",
+        "1F617",
+        "1F619",
+        "1F61A",
+        "1F642",
+        "1F917",
+        "1F929",
     ]
     download_google(emoji_list, "../emojis/google-noto/png/")
     download_twitter(emoji_list, "../emojis/twemoji/svg/")
