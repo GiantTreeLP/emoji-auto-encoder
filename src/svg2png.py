@@ -1,4 +1,5 @@
 import os
+import subprocess
 from multiprocessing.pool import Pool
 from typing import List, Callable
 from urllib import request
@@ -34,9 +35,7 @@ def download_emojitwo(format_list: List[str], directory: str):
                     directory)
 
 
-def download_emoji(url_lambda: Callable[[str], str], emoji: str, directory: str, extension: str = None):
-    if extension is None:
-        extension = os.path.splitext(url_lambda("undefined"))[1][1:]
+def download_emoji(url_lambda: Callable[[str], str], emoji: str, directory: str, extension: str):
     save_location = f"{directory}{emoji}.{extension}"
     if os.path.exists(save_location) and os.path.isfile(save_location):
         return
@@ -55,10 +54,27 @@ def download_emoji(url_lambda: Callable[[str], str], emoji: str, directory: str,
 
 def download_format(format_list: List[str], url_lambda: Callable[[str], str], directory: str, extension: str = None):
     os.makedirs(directory, exist_ok=True)
+    if extension is None:
+        extension = os.path.splitext(url_lambda("undefined"))[1][1:]
     with Pool() as p:
         p.starmap(download_emoji, [(url_lambda, emoji, directory, extension) for emoji in format_list])
         p.close()
         p.join()
+
+
+def convert_svg_to_png(src: str, dest: str):
+    os.makedirs(dest, exist_ok=True)
+    for file in os.listdir(src):
+        source_file = f"{src}{file}"
+        destination_file = f"{dest}{os.path.splitext(file)[0]}.png"
+        if os.path.exists(destination_file) and os.path.isfile(destination_file):
+            continue
+        print(f"Converting: {source_file} -> {destination_file}")
+        subprocess.call(["../convert.exe",
+                         "-background", "None",
+                         "-size", "128x128",
+                         source_file, destination_file],
+                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 if __name__ == '__main__':
@@ -78,3 +94,4 @@ if __name__ == '__main__':
     download_google(emoji_list, "../emojis/google-noto/png/")
     download_twitter(emoji_list, "../emojis/twemoji/svg/")
     download_emojitwo(emoji_list, "../emojis/emojitwo/png/")
+    convert_svg_to_png("../emojis/twemoji/svg/", "../emojis/twemoji/png/")
