@@ -10,9 +10,7 @@ def create_google_url(emoji: str):
 
 
 def download_google(format_list: List[str], directory: str):
-    download_format(format_list,
-                    create_google_url,
-                    directory)
+    download_format(format_list, create_google_url, directory)
 
 
 def create_twitter_url(emoji):
@@ -20,9 +18,15 @@ def create_twitter_url(emoji):
 
 
 def download_twitter(format_list: List[str], directory: str):
-    download_format(format_list,
-                    create_twitter_url,
-                    directory)
+    download_format(format_list, create_twitter_url, directory)
+
+
+def create_emojione_url(emoji: str):
+    return f"https://api.emojione.com/emoji/{emoji.lower()}/download/128"
+
+
+def download_emojione(format_list: List[str], directory: str):
+    download_format(format_list, create_emojione_url, directory, "png")
 
 
 def create_emojitwo_url(emoji):
@@ -30,9 +34,7 @@ def create_emojitwo_url(emoji):
 
 
 def download_emojitwo(format_list: List[str], directory: str):
-    download_format(format_list,
-                    create_emojitwo_url,
-                    directory)
+    download_format(format_list, create_emojitwo_url, directory)
 
 
 def download_emoji(url_lambda: Callable[[str], str], emoji: str, directory: str, extension: str):
@@ -93,5 +95,6 @@ if __name__ == '__main__':
     ]
     download_google(emoji_list, "../emojis/google-noto/png/")
     download_twitter(emoji_list, "../emojis/twemoji/svg/")
+    download_emojione(emoji_list, "../emojis/emojione/png/")
     download_emojitwo(emoji_list, "../emojis/emojitwo/png/")
     convert_svg_to_png("../emojis/twemoji/svg/", "../emojis/twemoji/png/")
