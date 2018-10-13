@@ -6,8 +6,8 @@ import imageio
 import numpy as np
 from tensorflow.python.keras import Input, Model
 from tensorflow.python.keras.activations import relu, sigmoid
-from tensorflow.python.keras.callbacks import TensorBoard, ModelCheckpoint, ProgbarLogger
-from tensorflow.python.keras.layers import Conv2D, MaxPooling2D, UpSampling2D, Dense
+from tensorflow.python.keras.callbacks import TensorBoard
+from tensorflow.python.keras.layers import Conv2D, MaxPooling2D, UpSampling2D, Dense, Flatten
 from tensorflow.python.keras.losses import binary_crossentropy
 from tensorflow.python.keras.metrics import binary_accuracy
 from tensorflow.python.keras.models import load_model
@@ -17,7 +17,7 @@ from image_callback import TensorBoardImage
 
 
 def create_model() -> Model:
-    input_img = Input(shape=(128, 128, 4))  # 128x128
+    input_img = Input(shape=(128, 128, 4,))  # 128x128
     x = Conv2D(16, (3, 3), activation=relu, padding='same')(input_img)
     x = MaxPooling2D((2, 2), padding='same')(x)  # 64x64
     x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
@@ -25,7 +25,10 @@ def create_model() -> Model:
     x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
     x = MaxPooling2D((4, 4), padding='same')(x)  # 8x8
     x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
-    encoded = Dense(8, activation=relu)(x)  # MaxPooling2D((4, 4), padding='same')(x)  # 2x2 = 4
+    x = Flatten()(x)
+    encoded = Dense(10, activation=relu)(x)  # MaxPooling2D((4, 4), padding='same')(x)  # 2x2 = 4
+
+    encoder = Model(input_img, encoded)
 
     x = Conv2D(8, (3, 3), activation=relu, padding='same')(encoded)
     x = UpSampling2D((2, 2))(x)  # 8x8
@@ -37,7 +40,9 @@ def create_model() -> Model:
     x = UpSampling2D((2, 2))(x)  # 128x128
     decoded = Conv2D(4, (3, 3), activation=sigmoid, padding='same')(x)
 
-    autoencoder = Model(input_img, decoded, name="emoji-autoencoder")
+    decoder = Model(encoded, decoded)
+
+    autoencoder = Model(encoder, decoder, name="emoji-autoencoder")
     autoencoder.compile(optimizer=Adadelta(), loss=binary_crossentropy, metrics=[binary_accuracy])
     return autoencoder
 
@@ -45,11 +50,11 @@ def create_model() -> Model:
 def train_model(model: Model, images):
     time_str = datetime.datetime.now().strftime("%y-%m-%d_%H-%M-%S")
     callbacks = [
-        TensorBoard(log_dir=f'../logs/{time_str}', write_images=True),
-        ProgbarLogger("samples", stateful_metrics="loss"),
+        TensorBoard(log_dir=f'../logs/{time_str}', write_images=True, write_graph=True),
         TensorBoardImage(f'../logs/{time_str}', "Emojis", images)
     ]
-    model.fit(images, images, epochs=1000, shuffle=True, callbacks=callbacks)
+    model.fit(images, images, epochs=1000, shuffle=True, batch_size=len(images), validation_data=(images, images),
+              callbacks=callbacks)
     model.save("../logs/model.h5")
 
 
@@ -68,11 +73,3 @@ if __name__ == '__main__':
         model = create_model()
 
     train_model(model, images)
-
-    prediction = model.predict([[images[0]]])
-    imageio.imwrite("original.png", images[0])
-    imageio.imwrite("test.png", prediction[0])
-
-    # np.reshape(images, 128, 128, 4)
-    # main()
-    pass
