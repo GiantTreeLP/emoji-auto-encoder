@@ -13,3 +13,7 @@
 
 - https://unicode.org/emoji/charts/full-emoji-list.html
 - https://unicode.org/Public/emoji/11.0/emoji-test.txt
+
+### Keras
+
+- https://blog.keras.io/building-autoencoders-in-keras.html
