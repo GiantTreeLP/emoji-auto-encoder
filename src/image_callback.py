@@ -13,8 +13,6 @@ class TensorBoardImage(keras.callbacks.TensorBoard):
         self.tag = tag
         self.images = images
         self.period = period
-        cfg = tf.ConfigProto()
-        self.sess = tf.Session(config=cfg)
         self.last_save = 0
 
     def on_train_begin(self, logs=None):
