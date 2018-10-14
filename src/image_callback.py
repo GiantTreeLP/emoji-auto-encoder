@@ -11,14 +11,14 @@ class TensorBoardImage(keras.callbacks.TensorBoard):
     def __init__(self, log_dir, tag, images, period=1):
         super(TensorBoardImage, self).__init__(log_dir=log_dir)
         self.tag = tag
-        self.images = images
+        self.sample_image = images[0]
         self.period = period
         self.last_save = 0
 
     def on_train_begin(self, logs=None):
         super(TensorBoardImage, self).on_train_begin(logs)
         img_bytes = io.BytesIO()
-        original = Image.fromarray(np.reshape(self.images[0] * 255, (128, 128)).astype('uint8'), 'L')
+        original = Image.fromarray(np.reshape(self.sample_image * 255, (128, 128)).astype('uint8'), 'L')
         original.save(img_bytes, 'png')
         original = tf.Summary.Image(width=original.width, height=original.height,
                                     encoded_image_string=img_bytes.getvalue())
@@ -31,7 +31,7 @@ class TensorBoardImage(keras.callbacks.TensorBoard):
         if self.last_save >= self.period:
             self.last_save = 0
 
-            prediction = self.model.predict([[self.images[0]]])[0]
+            prediction = self.model.predict([[self.sample_image]])[0]
             prediction = prediction * 255
             prediction = prediction.astype('uint8')
             prediction = np.reshape(prediction, (128, 128))
