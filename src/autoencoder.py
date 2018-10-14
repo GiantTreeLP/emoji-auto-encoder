@@ -27,7 +27,7 @@ def create_model(vector_len: int) -> Model:
     x = MaxPooling2D((2, 2), padding='same')(x)  # 2x2x4 = 16
     x = Flatten()(x)
     x = Dense(64, activation=relu)(x)
-    encoded = Dense(vector_len, activation=sigmoid)(x)
+    encoded = Dense(vector_len, activation=relu)(x)
 
     # encoder = Model(input_img, encoded, name="Encoder")
 
