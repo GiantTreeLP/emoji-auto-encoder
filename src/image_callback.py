@@ -17,6 +17,15 @@ class TensorBoardImage(keras.callbacks.TensorBoard):
         self.sess = tf.Session(config=cfg)
         self.last_save = 0
 
+    def on_train_begin(self, logs=None):
+        super(TensorBoardImage, self).on_train_begin(logs)
+        img_bytes = io.BytesIO()
+        original = Image.fromarray(np.reshape(self.images[0], (128, 128)), 'L')
+        original.save(img_bytes, 'png')
+        original = tf.Summary.Image(width=original.width, height=original.height,
+                                    encoded_image_string=img_bytes.getvalue())
+        self.writer.add_summary(tf.Summary(value=[tf.Summary.Value(tag="Original", image=original)]))
+
     def on_epoch_end(self, epoch, logs=None):
         super(TensorBoardImage, self).on_epoch_end(epoch, logs)
 
