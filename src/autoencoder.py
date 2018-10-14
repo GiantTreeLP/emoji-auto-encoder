@@ -6,6 +6,7 @@ import imageio
 import numpy as np
 from tensorflow.python.keras import Input, Model
 from tensorflow.python.keras.activations import relu, sigmoid
+from tensorflow.python.keras.callbacks import ModelCheckpoint, LambdaCallback
 from tensorflow.python.keras.layers import Conv2D, MaxPooling2D, UpSampling2D, Dense, Flatten, Reshape
 from tensorflow.python.keras.losses import binary_crossentropy
 from tensorflow.python.keras.metrics import binary_accuracy
@@ -53,11 +54,20 @@ def create_model(vector_len: int) -> Model:
 
 def train_model(model: Model, images):
     time_str = datetime.datetime.now().strftime("%y-%m-%d_%H-%M-%S")
+
+    if path.exists("../logs/epoch"):
+        epoch = int(open("../logs/epoch", "r").readline())
+    else:
+        epoch = 0
+
     callbacks = [
         TensorBoardImage(f'../logs/{time_str}', "Emojis", images),
+        ModelCheckpoint("../logs/model.h5"),
+        LambdaCallback(on_epoch_end=lambda epoch, logs: open("../logs/epoch", "w").write(str(epoch)))
     ]
     model.fit(images, images, epochs=3000, batch_size=len(images),
               # validation_data=(images, images),
+              initial_epoch=epoch,
               callbacks=callbacks)
     model.save("../logs/model.h5")
 
