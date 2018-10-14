@@ -66,7 +66,8 @@ def train_model(model: Model, images):
     model.fit(images, images, epochs=20000, batch_size=len(images),
               # validation_data=(images, images),
               initial_epoch=epoch,
-              callbacks=callbacks)
+              callbacks=callbacks,
+              verbose=0)
     model.save("../logs/model.h5")
 
 
