@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 from multiprocessing.pool import Pool
 from typing import List, Callable
 from urllib import request
@@ -87,7 +88,7 @@ def convert_png_to_bw(src: str, dest: str):
         if os.path.exists(destination_file) and os.path.isfile(destination_file):
             continue
         print(f"Converting: {source_file} -> {destination_file}")
-        subprocess.call(["../convert.exe",
+        subprocess.call(["../convert.exe" if sys.platform == "win32" else "convert",
                          "-size", "128x128",
                          source_file,
                          "-background", "white",
