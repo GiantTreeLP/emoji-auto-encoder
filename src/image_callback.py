@@ -5,18 +5,17 @@ from PIL import Image
 from tensorflow import keras
 
 
-class TensorBoardImage(keras.callbacks.Callback):
+class TensorBoardImage(keras.callbacks.TensorBoard):
 
-    def __init__(self, logdir, tag, images):
-        super().__init__()
-        self.logdir = logdir
+    def __init__(self, log_dir, tag, images):
+        super().__init__(log_dir=log_dir)
         self.tag = tag
         self.images = images
         cfg = tf.ConfigProto()
         self.sess = tf.Session(config=cfg)
-        self.writer = tf.summary.FileWriter(logdir=self.logdir, session=self.sess)
 
     def on_epoch_end(self, epoch, logs=None):
+        super(TensorBoardImage, self).on_epoch_end(epoch, logs)
         if logs is None:
             logs = {}
         with tf.device("/cpu:0"):
@@ -30,9 +29,3 @@ class TensorBoardImage(keras.callbacks.Callback):
             summary = tf.Summary(value=[tf.Summary.Value(tag=self.tag, image=image)])
 
         self.writer.add_summary(summary, epoch)
-        self.writer.flush()
-
-    def on_train_end(self, logs=None):
-        self.writer.flush()
-        self.writer.close()
-        pass

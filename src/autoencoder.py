@@ -6,8 +6,7 @@ import imageio
 import numpy as np
 from tensorflow.python.keras import Input, Model
 from tensorflow.python.keras.activations import relu, sigmoid
-from tensorflow.python.keras.callbacks import TensorBoard
-from tensorflow.python.keras.layers import Conv2D, MaxPooling2D, UpSampling2D, Dense, Flatten
+from tensorflow.python.keras.layers import Conv2D, MaxPooling2D, UpSampling2D
 from tensorflow.python.keras.losses import binary_crossentropy
 from tensorflow.python.keras.metrics import binary_accuracy
 from tensorflow.python.keras.models import load_model
@@ -17,32 +16,31 @@ from image_callback import TensorBoardImage
 
 
 def create_model() -> Model:
-    input_img = Input(shape=(128, 128, 4,))  # 128x128
-    x = Conv2D(16, (3, 3), activation=relu, padding='same')(input_img)
-    x = MaxPooling2D((2, 2), padding='same')(x)  # 64x64
-    x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
-    x = MaxPooling2D((2, 2), padding='same')(x)  # 32x32
-    x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
-    x = MaxPooling2D((4, 4), padding='same')(x)  # 8x8
-    x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
-    x = Flatten()(x)
-    encoded = Dense(10, activation=relu)(x)  # MaxPooling2D((4, 4), padding='same')(x)  # 2x2 = 4
+    input_img = Input(shape=(128, 128, 4,), name="Input-Image-128x128")  # 128x128
+    x = Conv2D(16, (3, 3), activation=relu, padding='same', name="Convolution1")(input_img)
+    x = MaxPooling2D((2, 2), padding='same', name="64x64")(x)  # 64x64
+    x = Conv2D(8, (3, 3), activation=relu, padding='same', name="Convolution2")(x)
+    x = MaxPooling2D((2, 2), padding='same', name="32x32")(x)  # 32x32
+    x = Conv2D(8, (3, 3), activation=relu, padding='same', name="Convolution3")(x)
+    x = MaxPooling2D((4, 4), padding='same', name="8x8")(x)  # 8x8
+    x = Conv2D(4, (3, 3), activation=relu, padding='same')(x)
+    encoded = MaxPooling2D((4, 4), padding='same')(x)  # 2x2x4 = 16
 
-    encoder = Model(input_img, encoded)
+    # encoder = Model(input_img, encoded, name="Encoder")
 
-    x = Conv2D(8, (3, 3), activation=relu, padding='same')(encoded)
-    x = UpSampling2D((2, 2))(x)  # 8x8
+    input_decoder = Conv2D(8, (3, 3), activation=relu, padding='same')(encoded)
+    x = UpSampling2D((4, 4))(input_decoder)  # 8x8
     x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
     x = UpSampling2D((2, 2))(x)  # 32x32
     x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
     x = UpSampling2D((2, 2))(x)  # 64x64
-    x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
-    x = UpSampling2D((2, 2))(x)  # 128x128
-    decoded = Conv2D(4, (3, 3), activation=sigmoid, padding='same')(x)
+    x = Conv2D(16, (3, 3), activation=relu, padding='same')(x)
+    x = UpSampling2D((4, 4))(x)  # 128x128
+    decoded = Conv2D(4, (3, 3), activation=sigmoid, padding='same', name="Decoded")(x)
 
-    decoder = Model(encoded, decoded)
+    # decoder = Model(input_decoder, decoded, name="Decoder")
 
-    autoencoder = Model(encoder, decoder, name="emoji-autoencoder")
+    autoencoder = Model(input_img, decoded, name="emoji-autoencoder")
     autoencoder.compile(optimizer=Adadelta(), loss=binary_crossentropy, metrics=[binary_accuracy])
     return autoencoder
 
@@ -50,8 +48,7 @@ def create_model() -> Model:
 def train_model(model: Model, images):
     time_str = datetime.datetime.now().strftime("%y-%m-%d_%H-%M-%S")
     callbacks = [
-        TensorBoard(log_dir=f'../logs/{time_str}', write_images=True, write_graph=True),
-        TensorBoardImage(f'../logs/{time_str}', "Emojis", images)
+        TensorBoardImage(f'../logs/{time_str}', "Emojis", images),
     ]
     model.fit(images, images, epochs=1000, shuffle=True, batch_size=len(images), validation_data=(images, images),
               callbacks=callbacks)
@@ -71,5 +68,7 @@ if __name__ == '__main__':
         model: Model = load_model("../logs/model.h5")
     else:
         model = create_model()
+
+    model.summary()
 
     train_model(model, images)
