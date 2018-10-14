@@ -23,15 +23,17 @@ class TensorBoardImage(keras.callbacks.TensorBoard):
         self.last_save += 1
         if self.last_save >= self.period:
             self.last_save = 0
+            self._predict(epoch)
 
-            prediction = self.model.predict([[self.images[0]]])[0]
-            prediction = prediction * 255
-            prediction = prediction.astype('uint8')
-            prediction = np.reshape(prediction, (128, 128))
-            img_bytes = io.BytesIO()
-            image = Image.fromarray(prediction, "L")
-            image.save(img_bytes, format="png")
-            image = tf.Summary.Image(height=image.height, width=image.width, encoded_image_string=img_bytes.getvalue())
-            summary = tf.Summary(value=[tf.Summary.Value(tag=self.tag, image=image)])
+    def _predict(self, epoch):
+        prediction = self.model.predict([[self.images[0]]])[0]
+        prediction = prediction * 255
+        prediction = prediction.astype('uint8')
+        prediction = np.reshape(prediction, (128, 128))
+        img_bytes = io.BytesIO()
+        image = Image.fromarray(prediction, "L")
+        image.save(img_bytes, format="png")
+        image = tf.Summary.Image(height=image.height, width=image.width, encoded_image_string=img_bytes.getvalue())
+        summary = tf.Summary(value=[tf.Summary.Value(tag=self.tag, image=image)])
 
-            self.writer.add_summary(summary, epoch)
+        self.writer.add_summary(summary, epoch)
