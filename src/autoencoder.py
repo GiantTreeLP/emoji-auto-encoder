@@ -6,7 +6,7 @@ from typing import Tuple
 import imageio
 import numpy as np
 from tensorflow.python.keras import Input, Model
-from tensorflow.python.keras.activations import relu, sigmoid
+from tensorflow.python.keras.activations import relu, tanh
 from tensorflow.python.keras.layers import Conv2D, MaxPooling2D, UpSampling2D, Dense, Flatten, Reshape
 from tensorflow.python.keras.losses import mean_squared_error
 from tensorflow.python.keras.optimizers import Adadelta
@@ -86,18 +86,17 @@ def get_model():
     return model, encoder, decoder
 
 
-if __name__ == '__main__':
+def main():
     images = []
-
     for file in glob.glob("../emojis/twemoji/png_bw/*.png"):
         images.append(imageio.imread(file))
-
     images = np.array(images)
     images = np.reshape(images, (-1, 128, 128, 1))
     images = images.astype('float32') / 255
-
     model, _, _ = get_model()
-
     model.summary()
-
     train_model(model, images)
+
+
+if __name__ == '__main__':
+    main()
