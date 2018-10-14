@@ -56,7 +56,8 @@ def train_model(model: Model, images):
     callbacks = [
         TensorBoardImage(f'../logs/{time_str}', "Emojis", images),
     ]
-    model.fit(images, images, epochs=1000, shuffle=True, batch_size=len(images), validation_data=(images, images),
+    model.fit(images, images, epochs=3000, batch_size=len(images),
+              # validation_data=(images, images),
               callbacks=callbacks)
     model.save("../logs/model.h5")
 
