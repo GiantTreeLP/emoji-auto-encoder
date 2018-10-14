@@ -18,7 +18,7 @@ class TensorBoardImage(keras.callbacks.TensorBoard):
     def on_train_begin(self, logs=None):
         super(TensorBoardImage, self).on_train_begin(logs)
         img_bytes = io.BytesIO()
-        original = Image.fromarray(np.reshape(self.images[0], (128, 128)), 'L')
+        original = Image.fromarray(np.reshape(self.images[0] * 255, (128, 128)).astype('uint8'), 'L')
         original.save(img_bytes, 'png')
         original = tf.Summary.Image(width=original.width, height=original.height,
                                     encoded_image_string=img_bytes.getvalue())
