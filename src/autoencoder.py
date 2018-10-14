@@ -69,7 +69,7 @@ def train_model(model: Model, images):
         epoch = 0
 
     callbacks = [
-        TensorBoardImage(f'../logs/{time_str}', "Emojis", images),
+        TensorBoardImage(f'../logs/{time_str}', "Emojis", images, period=10),
         CheckpointCallback("../logs/model.h5", period=10),
     ]
     model.fit(images, images, epochs=100000 + epoch, batch_size=len(images),
