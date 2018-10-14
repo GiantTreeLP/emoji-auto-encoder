@@ -79,6 +79,26 @@ def convert_svg_to_png(src: str, dest: str):
                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
+def convert_png_to_bw(src: str, dest: str):
+    os.makedirs(dest, exist_ok=True)
+    for file in os.listdir(src):
+        source_file = f"{src}{file}"
+        destination_file = f"{dest}{os.path.splitext(file)[0]}.png"
+        if os.path.exists(destination_file) and os.path.isfile(destination_file):
+            continue
+        print(f"Converting: {source_file} -> {destination_file}")
+        subprocess.call(["../convert.exe",
+                         "-size", "128x128",
+                         source_file,
+                         "-background", "white",
+                         "-alpha", "remove",
+                         "-colorspace", "gray",
+                         "-depth", "8",
+                         "-type", "grayscale",
+                         destination_file],
+                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
 if __name__ == '__main__':
     emoji_list = [
         # subgroup: face-positive
@@ -180,3 +200,4 @@ if __name__ == '__main__':
     download_emojione(emoji_list, "../emojis/emojione/png/")
     # download_emojitwo(emoji_list, "../emojis/emojitwo/png/")
     convert_svg_to_png("../emojis/twemoji/svg/", "../emojis/twemoji/png/")
+    convert_png_to_bw("../emojis/twemoji/png/", "../emojis/twemoji/png_bw/")
