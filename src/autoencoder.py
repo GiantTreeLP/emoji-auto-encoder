@@ -6,18 +6,17 @@ import imageio
 import numpy as np
 from tensorflow.python.keras import Input, Model
 from tensorflow.python.keras.activations import relu, sigmoid
-from tensorflow.python.keras.callbacks import ModelCheckpoint, LambdaCallback
 from tensorflow.python.keras.layers import Conv2D, MaxPooling2D, UpSampling2D, Dense, Flatten, Reshape
 from tensorflow.python.keras.losses import binary_crossentropy
 from tensorflow.python.keras.metrics import binary_accuracy
-from tensorflow.python.keras.models import load_model
 from tensorflow.python.keras.optimizers import Adadelta
 
+from checkpoint_callback import CheckpointCallback
 from image_callback import TensorBoardImage
 
 
 def create_model(vector_len: int) -> Model:
-    input_img = Input(shape=(128, 128, 4,), name="Input-Image-128x128")  # 128x128
+    input_img = Input(shape=(128, 128, 1), name="Input-Image-128x128")  # 128x128
     x = Conv2D(16, (3, 3), activation=relu, padding='same', name="Convolution1")(input_img)
     x = MaxPooling2D((2, 2), padding='same', name="64x64")(x)  # 64x64
     x = Conv2D(8, (3, 3), activation=relu, padding='same', name="Convolution2")(x)
@@ -33,8 +32,8 @@ def create_model(vector_len: int) -> Model:
     # encoder = Model(input_img, encoded, name="Encoder")
 
     input_decoder = Dense(vector_len, activation=relu)(encoded)
-    x = Dense(64, activation=relu)(input_decoder)
-    x = Reshape((4, 4, 4))(x)
+    x = Dense(16, activation=relu)(input_decoder)
+    x = Reshape((4, 4, 1))(x)
     x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
     x = UpSampling2D((2, 2))(x)  # 8x8
     x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
@@ -43,7 +42,7 @@ def create_model(vector_len: int) -> Model:
     x = UpSampling2D((2, 2))(x)  # 64x64
     x = Conv2D(16, (3, 3), activation=relu, padding='same')(x)
     x = UpSampling2D((4, 4))(x)  # 128x128
-    decoded = Conv2D(4, (3, 3), activation=sigmoid, padding='same', name="Decoded")(x)
+    decoded = Conv2D(1, (3, 3), activation=sigmoid, padding='same', name="Decoded")(x)
 
     # decoder = Model(input_decoder, decoded, name="Decoder")
 
@@ -62,10 +61,9 @@ def train_model(model: Model, images):
 
     callbacks = [
         TensorBoardImage(f'../logs/{time_str}', "Emojis", images),
-        ModelCheckpoint("../logs/model.h5"),
-        LambdaCallback(on_epoch_end=lambda epoch, logs: open("../logs/epoch", "w").write(str(epoch)))
+        CheckpointCallback("../logs/model.h5", period=100),
     ]
-    model.fit(images, images, epochs=3000, batch_size=len(images),
+    model.fit(images, images, epochs=20000, batch_size=len(images),
               # validation_data=(images, images),
               initial_epoch=epoch,
               callbacks=callbacks)
@@ -75,16 +73,17 @@ def train_model(model: Model, images):
 if __name__ == '__main__':
     images = []
 
-    for file in glob.glob("../emojis/twemoji/png/*.png"):
+    for file in glob.glob("../emojis/twemoji/png_bw/*.png"):
         images.append(imageio.imread(file))
 
     images = np.array(images)
+    images = np.reshape(images, (-1, 128, 128, 1))
     images = images.astype('float32') / 255
 
+    model = create_model(64)
+
     if path.exists("../logs/model.h5"):
-        model: Model = load_model("../logs/model.h5")
-    else:
-        model = create_model(10)
+        model.load_weights("../logs/model.h5")
 
     model.summary()
 
