@@ -1,5 +1,6 @@
 import datetime
 import glob
+import os
 from os import path
 from typing import Tuple
 
@@ -70,20 +71,22 @@ def train_model(model: Model, images):
 
     callbacks = [
         TensorBoardImage(f'../logs/{time_str}', "Emojis", images, period=10),
-        CheckpointCallback("../logs/model.h5", period=10),
+        CheckpointCallback(f'../logs/{time_str}', period=10),
     ]
     model.fit(images, images, epochs=100000 + epoch, batch_size=len(images),
               # validation_data=(images, images),
               initial_epoch=epoch,
               callbacks=callbacks,
               verbose=0)
-    model.save("../logs/model.h5")
+    model.save(f"../logs/{time_str}/model.h5")
 
 
 def get_model():
     model, encoder, decoder = create_model(8)
-    if path.exists("../logs/model.h5"):
-        model.load_weights("../logs/model.h5")
+    dirs = [x for x in os.listdir("../logs/") if not path.isfile(f"../logs{x}")]
+
+    if path.exists(f"../logs/{dirs[-1]}/model.h5"):
+        model.load_weights(f"../logs/{dirs[-1]}/model.h5")
     return model, encoder, decoder
 
 
