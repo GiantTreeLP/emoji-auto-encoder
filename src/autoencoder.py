@@ -6,7 +6,7 @@ from typing import Tuple
 import imageio
 import numpy as np
 from tensorflow.python.keras import Input, Model
-from tensorflow.python.keras.activations import relu, sigmoid
+from tensorflow.python.keras.activations import relu, tanh
 from tensorflow.python.keras.layers import Conv2D, MaxPooling2D, UpSampling2D, Dense, Flatten, Reshape
 from tensorflow.python.keras.losses import mean_squared_error
 from tensorflow.python.keras.optimizers import Adadelta
@@ -27,13 +27,13 @@ def encoder_128(vector_len: int) -> Model:
     x = MaxPooling2D((2, 2), padding='same', name="shrink-4x4")(x)
     x = Flatten(name="matrix-to-vector")(x)
     x = Dense(64, activation=relu, name="link-flat-to-64x1")(x)
-    encoded = Dense(vector_len, activation=sigmoid, name=f"output-{vector_len}x1")(x)
+    encoded = Dense(vector_len, activation=tanh, name=f"output-{vector_len}x1")(x)
     return Model(input_img, encoded, name="Encoder")
 
 
 def decoder_128(vector_len: int) -> Model:
     input_decoder = Input(shape=(vector_len,), name=f"input-{vector_len}x1")
-    x = Dense(64, activation=sigmoid, name="activate-input")(input_decoder)
+    x = Dense(64, activation=tanh, name="activate-input")(input_decoder)
     x = Dense(64, activation=relu, name="link-reshape-64x1")(x)
     x = Reshape((8, 8, 1), name="reshape-8x8")(x)
     x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
@@ -44,7 +44,7 @@ def decoder_128(vector_len: int) -> Model:
     x = UpSampling2D((2, 2), name="grow-64x64")(x)
     x = Conv2D(16, (3, 3), activation=relu, padding='same')(x)
     x = UpSampling2D((2, 2), name="grow-128x128")(x)
-    decoded = Conv2D(1, (5, 5), activation=sigmoid, padding='same', name="output-128x128")(x)
+    decoded = Conv2D(1, (5, 5), activation=tanh, padding='same', name="output-128x128")(x)
 
     return Model(input_decoder, decoded, name="Decoder")
 
@@ -91,6 +91,7 @@ def main():
     images = []
     for file in glob.glob("../emojis/twemoji/png_bw/*.png"):
         images.append(imageio.imread(file))
+    images *= 2  # increase batch input by duplication
     images = np.array(images)
     images = np.reshape(images, (-1, 128, 128, 1))
     images = images.astype('float32') / 255
