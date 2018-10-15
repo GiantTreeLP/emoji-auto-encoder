@@ -16,35 +16,35 @@ from image_callback import TensorBoardImage
 
 
 def encoder_128(vector_len: int) -> Model:
-    input_img = Input(shape=(128, 128, 1), name="input-128x128")  # 128x128
+    input_img = Input(shape=(128, 128, 1), name="input_128x128")  # 128x128
     x = Conv2D(16, (5, 5), activation=relu, padding='same', name="Convolution1")(input_img)
-    x = MaxPooling2D((2, 2), padding='same', name="shrink-64x64")(x)  # 64x64
+    x = MaxPooling2D((2, 2), padding='same', name="shrink_64x64")(x)  # 64x64
     x = Conv2D(8, (3, 3), activation=relu, padding='same', name="Convolution2")(x)
-    x = MaxPooling2D((2, 2), padding='same', name="shrink-32x32")(x)  # 32x32
+    x = MaxPooling2D((2, 2), padding='same', name="shrink_32x32")(x)  # 32x32
     x = Conv2D(8, (3, 3), activation=relu, padding='same', name="Convolution3")(x)
-    x = MaxPooling2D((4, 4), padding='same', name="shrink-8x8")(x)
+    x = MaxPooling2D((4, 4), padding='same', name="shrink_8x8")(x)
     x = Conv2D(4, (3, 3), activation=relu, padding='same')(x)
-    x = MaxPooling2D((2, 2), padding='same', name="shrink-4x4")(x)
+    x = MaxPooling2D((2, 2), padding='same', name="shrink_4x4")(x)
     x = Flatten(name="matrix-to-vector")(x)
-    x = Dense(64, activation=relu, name="link-flat-to-64x1")(x)
-    encoded = Dense(vector_len, activation=tanh, name=f"output-{vector_len}x1")(x)
+    x = Dense(64, activation=relu, name="link_flat_to_64x1")(x)
+    encoded = Dense(vector_len, activation=tanh, name=f"output_{vector_len}x1")(x)
     return Model(input_img, encoded, name="Encoder")
 
 
 def decoder_128(vector_len: int) -> Model:
-    input_decoder = Input(shape=(vector_len,), name=f"input-{vector_len}x1")
-    x = Dense(64, activation=tanh, name="activate-input")(input_decoder)
-    x = Dense(64, activation=relu, name="link-reshape-64x1")(x)
-    x = Reshape((8, 8, 1), name="reshape-8x8")(x)
+    input_decoder = Input(shape=(vector_len,), name=f"input_{vector_len}x1")
+    x = Dense(64, activation=tanh, name="activate_input")(input_decoder)
+    x = Dense(64, activation=relu, name="link_reshape_64x1")(x)
+    x = Reshape((8, 8, 1), name="reshape_8x8")(x)
     x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
-    x = UpSampling2D((2, 2), name="grow-16x16")(x)
+    x = UpSampling2D((2, 2), name="grow_16x16")(x)
     x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
-    x = UpSampling2D((2, 2), name="grow-32x32")(x)
+    x = UpSampling2D((2, 2), name="grow_32x32")(x)
     x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
-    x = UpSampling2D((2, 2), name="grow-64x64")(x)
+    x = UpSampling2D((2, 2), name="grow_64x64")(x)
     x = Conv2D(16, (3, 3), activation=relu, padding='same')(x)
-    x = UpSampling2D((2, 2), name="grow-128x128")(x)
-    decoded = Conv2D(1, (5, 5), activation=tanh, padding='same', name="output-128x128")(x)
+    x = UpSampling2D((2, 2), name="grow_128x128")(x)
+    decoded = Conv2D(1, (5, 5), activation=tanh, padding='same', name="output_128x128")(x)
 
     return Model(input_decoder, decoded, name="Decoder")
 
@@ -55,7 +55,7 @@ def create_model(vector_len: int) -> Tuple[Model, Model, Model]:
 
     input_layer = Input(shape=(128, 128, 1))
 
-    autoencoder = Model(input_layer, decoder(encoder(input_layer)), name="emoji-autoencoder")
+    autoencoder = Model(input_layer, decoder(encoder(input_layer)), name="emoji_autoencoder")
     autoencoder.compile(optimizer=Adadelta(), loss=mean_squared_error)
     return autoencoder, encoder, decoder
 
