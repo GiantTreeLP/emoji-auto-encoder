@@ -1,3 +1,4 @@
+import tensorflowjs as tfjs
 from tensorflow.python.keras.callbacks import ModelCheckpoint, ProgbarLogger
 
 
@@ -29,6 +30,7 @@ class CheckpointCallback(ModelCheckpoint):
         super().on_epoch_end(epoch, logs)
         if self.epochs_since_last_save == 0:
             open("../logs/epoch", "w").write(str(epoch))
+            tfjs.converters.save_keras_model(self.model, self.filepath)
             self.logger.on_epoch_end(epoch, logs)
 
     def on_train_begin(self, logs=None):
