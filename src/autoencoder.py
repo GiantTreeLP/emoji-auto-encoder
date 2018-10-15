@@ -64,18 +64,12 @@ def create_model(vector_len: int) -> Tuple[Model, Model, Model]:
 def train_model(model: Model, images):
     time_str = datetime.datetime.now().strftime("%y-%m-%d_%H-%M-%S")
 
-    if path.exists("../logs/epoch"):
-        epoch = int(open("../logs/epoch", "r").readline())
-    else:
-        epoch = 0
-
     callbacks = [
         TensorBoardImage(f'../logs/{time_str}', "Emojis", images, period=10),
         CheckpointCallback(f'../logs/{time_str}', period=10),
     ]
-    model.fit(images, images, epochs=100000 + epoch, batch_size=len(images),
+    model.fit(images, images, epochs=100000, batch_size=len(images),
               # validation_data=(images, images),
-              initial_epoch=epoch,
               callbacks=callbacks,
               verbose=0)
     model.save(f"../logs/{time_str}/model.h5")
