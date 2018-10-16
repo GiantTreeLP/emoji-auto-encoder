@@ -86,7 +86,7 @@ def get_model():
         if path.exists(f"{LOGS_DIR}{dirs[-1]}/model.h5"):
             try:
                 model.load_weights(f"{LOGS_DIR}{dirs[-1]}/model.h5")
-            except ImportError:
+            except ValueError:
                 pass
     return model, encoder, decoder
 
