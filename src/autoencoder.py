@@ -20,13 +20,13 @@ LOGS_DIR = "../logs/"
 
 def encoder_128(vector_len: int) -> Model:
     input_img = Input(shape=(128, 128, 1), name="input_128x128")  # 128x128
-    x = Conv2D(16, (5, 5), activation=relu, padding='same', name="Convolution1")(input_img)
+    x = Conv2D(64, (5, 5), activation=relu, padding='same', name="Convolution1")(input_img)
     x = MaxPooling2D((2, 2), padding='same', name="shrink_64x64")(x)  # 64x64
-    x = Conv2D(8, (3, 3), activation=relu, padding='same', name="Convolution2")(x)
+    x = Conv2D(32, (3, 3), activation=relu, padding='same', name="Convolution2")(x)
     x = MaxPooling2D((2, 2), padding='same', name="shrink_32x32")(x)  # 32x32
-    x = Conv2D(8, (3, 3), activation=relu, padding='same', name="Convolution3")(x)
+    x = Conv2D(16, (3, 3), activation=relu, padding='same', name="Convolution3")(x)
     x = MaxPooling2D((4, 4), padding='same', name="shrink_8x8")(x)
-    x = Conv2D(4, (3, 3), activation=relu, padding='same')(x)
+    x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
     x = MaxPooling2D((2, 2), padding='same', name="shrink_4x4")(x)
     x = Flatten(name="matrix-to-vector")(x)
     x = Dense(64, activation=relu, name="link_flat_to_64x1")(x)
@@ -41,11 +41,11 @@ def decoder_128(vector_len: int) -> Model:
     x = Reshape((8, 8, 1), name="reshape_8x8")(x)
     x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
     x = UpSampling2D((2, 2), name="grow_16x16")(x)
-    x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
-    x = UpSampling2D((2, 2), name="grow_32x32")(x)
-    x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
-    x = UpSampling2D((2, 2), name="grow_64x64")(x)
     x = Conv2D(16, (3, 3), activation=relu, padding='same')(x)
+    x = UpSampling2D((2, 2), name="grow_32x32")(x)
+    x = Conv2D(32, (3, 3), activation=relu, padding='same')(x)
+    x = UpSampling2D((2, 2), name="grow_64x64")(x)
+    x = Conv2D(64, (3, 3), activation=relu, padding='same')(x)
     x = UpSampling2D((2, 2), name="grow_128x128")(x)
     decoded = Conv2D(1, (5, 5), activation=tanh, padding='same', name="output_128x128")(x)
 
@@ -95,7 +95,7 @@ def main():
     images = []
     for file in glob.glob("../emojis/twemoji/png_bw/*.png"):
         images.append(imageio.imread(file))
-    images *= 2  # increase batch input by duplication
+    images *= 1  # increase batch input by duplication
     images = np.array(images)
     images = np.reshape(images, (-1, 128, 128, 1))
     images = images.astype('float32') / 255
