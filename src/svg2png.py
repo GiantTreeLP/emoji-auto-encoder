@@ -14,7 +14,7 @@ def download_google(format_list: List[str], directory: str):
     download_format(format_list, create_google_url, directory)
 
 
-def create_twitter_url(emoji):
+def create_twitter_url(emoji: str):
     return f"https://github.com/twitter/twemoji/raw/gh-pages/2/svg/{emoji.lower()}.svg"
 
 
@@ -30,7 +30,7 @@ def download_emojione(format_list: List[str], directory: str):
     download_format(format_list, create_emojione_url, directory, "png")
 
 
-def create_emojitwo_url(emoji):
+def create_emojitwo_url(emoji: str):
     return f"https://github.com/EmojiTwo/emojitwo/raw/master/png/128/{emoji.lower()}.png"
 
 
