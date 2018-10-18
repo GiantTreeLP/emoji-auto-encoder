@@ -14,7 +14,7 @@ def download_google(format_list: List[str], directory: str):
     download_format(format_list, create_google_url, directory)
 
 
-def create_twitter_url(emoji):
+def create_twitter_url(emoji: str):
     return f"https://github.com/twitter/twemoji/raw/gh-pages/2/svg/{emoji.lower()}.svg"
 
 
@@ -30,7 +30,7 @@ def download_emojione(format_list: List[str], directory: str):
     download_format(format_list, create_emojione_url, directory, "png")
 
 
-def create_emojitwo_url(emoji):
+def create_emojitwo_url(emoji: str):
     return f"https://github.com/EmojiTwo/emojitwo/raw/master/png/128/{emoji.lower()}.png"
 
 
@@ -165,23 +165,23 @@ if __name__ == '__main__':
         "1F627",
         "1F628",
         "1F629",
-        # "1F92F",
+        "1F92F",
         "1F62C",
         "1F630",
         "1F631",
-        # "1F975",
-        # "1F976",
+        "1F975",
+        "1F976",
         "1F633",
         "1F92A",
         "1F635",
-        # "1F621",
+        "1F621",
         "1F620",
-        # "1F92C",
+        "1F92C",
         # subgroup: face-sick
         "1F637",
         "1F912",
         "1F915",
-        # "1F922",
+        "1F922",
         "1F92E",
         "1F927",
         # subgroup: face-role

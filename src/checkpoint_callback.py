@@ -1,3 +1,4 @@
+import tensorflowjs as tfjs
 from tensorflow.python.keras.callbacks import ModelCheckpoint, ProgbarLogger
 
 
@@ -10,7 +11,7 @@ class CheckpointCallback(ModelCheckpoint):
                  save_weights_only=False,
                  mode='auto',
                  period=1):
-        super(CheckpointCallback, self).__init__(filepath,
+        super(CheckpointCallback, self).__init__(filepath + "/model.h5",
                                                  monitor,
                                                  verbose,
                                                  save_best_only,
@@ -19,6 +20,7 @@ class CheckpointCallback(ModelCheckpoint):
                                                  period)
         self.logger = ProgbarLogger()
         self.logger.verbose = True
+        self.dir = filepath
 
     def on_epoch_begin(self, epoch, logs=None):
         super(CheckpointCallback, self).on_epoch_begin(epoch, logs)
@@ -28,18 +30,17 @@ class CheckpointCallback(ModelCheckpoint):
     def on_epoch_end(self, epoch, logs=None):
         super().on_epoch_end(epoch, logs)
         if self.epochs_since_last_save == 0:
-            open("../logs/epoch", "w").write(str(epoch))
+            tfjs.converters.save_keras_model(self.model, self.dir)
             self.logger.on_epoch_end(epoch, logs)
 
     def on_train_begin(self, logs=None):
         super(CheckpointCallback, self).on_train_begin(logs)
-        if self.epochs_since_last_save == 0:
-            self.logger.on_train_begin(logs)
+        self.logger.on_train_begin(logs)
 
     def on_train_end(self, logs=None):
         super(CheckpointCallback, self).on_train_end(logs)
-        if self.epochs_since_last_save == 0:
-            self.logger.on_epoch_end(logs)
+        self.logger.on_train_end(logs)
+        tfjs.converters.save_keras_model(self.model, self.dir)
 
     def on_batch_begin(self, batch, logs=None):
         super(CheckpointCallback, self).on_batch_begin(batch)
