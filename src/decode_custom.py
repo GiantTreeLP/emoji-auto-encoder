@@ -19,13 +19,18 @@ if __name__ == '__main__':
     images = np.array(images)
     images = np.reshape(images, (-1, 128, 128, 1))
     images = images.astype('float32') / 255
-    model, _, _ = get_model()
+    _, encoder, decoder = get_model()
 
-    prediction = model.predict(images)
+    prediction = encoder.predict(images)
+    print("Encoded:")
+    print(prediction.dtype)
+    for p in prediction:
+        print(p)
+
+    prediction = decoder.predict(prediction)
     prediction = (prediction * 255).astype('uint8')
+    print("Decoded and saved.")
 
     os.makedirs("../emojis/twemoji/test", exist_ok=True)
     for i in range(len(prediction)):
         imageio.imwrite(f"../emojis/twemoji/test/{names[i]}.png", prediction[i], 'png')
-
-    imageio.imwrite("../test.png", prediction[0])
