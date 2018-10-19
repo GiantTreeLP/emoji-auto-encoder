@@ -82,10 +82,12 @@ def get_model():
     if path.exists(LOGS_DIR):
         dirs = [x for x in os.listdir(LOGS_DIR) if not path.isfile(f"{LOGS_DIR}{x}")]
         dirs.sort()
+        model_dir = dirs[-1]
 
-        if path.exists(f"{LOGS_DIR}{dirs[-1]}/model.h5"):
+        if path.exists(f"{LOGS_DIR}{model_dir}/model.h5"):
             try:
-                model.load_weights(f"{LOGS_DIR}{dirs[-1]}/model.h5")
+                print(f"Loading model '{model_dir}'")
+                model.load_weights(f"{LOGS_DIR}{model_dir}/model.h5")
             except ValueError:
                 pass
     return model, encoder, decoder
