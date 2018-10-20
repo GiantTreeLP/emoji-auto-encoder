@@ -30,7 +30,7 @@ class CheckpointCallback(ModelCheckpoint):
     def on_epoch_end(self, epoch, logs=None):
         super().on_epoch_end(epoch, logs)
         if self.epochs_since_last_save == 0:
-            tfjs.converters.save_keras_model(self.model, self.dir)
+            # tfjs.converters.save_keras_model(self.model, self.dir)
             self.logger.on_epoch_end(epoch, logs)
 
     def on_train_begin(self, logs=None):
