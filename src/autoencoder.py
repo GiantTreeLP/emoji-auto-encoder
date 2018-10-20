@@ -59,7 +59,7 @@ def create_model(vector_len: int) -> Tuple[Model, Model, Model]:
     input_layer = Input(shape=(128, 128, 1))
 
     autoencoder = Model(input_layer, decoder(encoder(input_layer)), name="emoji_autoencoder")
-    autoencoder.compile(optimizer=Adadelta(), loss=mean_squared_error)
+    autoencoder.compile(optimizer=Adadelta(0.1), loss=mean_squared_error)
     return autoencoder, encoder, decoder
 
 
