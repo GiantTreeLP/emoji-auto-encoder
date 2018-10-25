@@ -21,7 +21,7 @@ let sketch = function (s) {
             s.inputs[i].value(s.parameters[i].value());
         }
         s.updatePermalink();
-        await s.renderEmoji();
+        s.renderEmoji();
     };
 
     s.updatePermalink = function () {
@@ -33,13 +33,13 @@ let sketch = function (s) {
         s.createA(url.toString(), url.toString()).parent(s.permalink);
     };
 
-    s.newInput = async function (event) {
+    s.newInput = function (event) {
         for (let i = 0; i < s.inputs.length; i++) {
             s.parameters[i].value(s.inputs[i].value());
         }
         s.updatePermalink();
         if (event && !isNaN(parseInt(event.target.value))) {
-            await s.renderEmoji();
+            s.renderEmoji();
         }
     };
 
@@ -58,8 +58,8 @@ let sketch = function (s) {
         s.permalink = s.createDiv();
 
         s.model = await tf.loadModel("./model.json");
-        await s.newInput();
-        await s.renderEmoji();
+        s.newInput();
+        s.renderEmoji();
     };
 };
 
