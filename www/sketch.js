@@ -12,8 +12,7 @@ let sketch = function (s) {
                         a.dispose();
                         b.dispose();
                     });
-                });
-            parameters.dispose();
+                }).then(() => parameters.dispose());
         });
     };
 
