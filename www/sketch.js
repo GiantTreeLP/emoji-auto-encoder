@@ -48,7 +48,7 @@ let sketch = function (s) {
             s.createSpan(`Variable ${i}: `).parent(div);
             let value = parseFloat(url.searchParams.get(`v${i}`) || 0);
             s.parameters.push(s.createSlider(-1, 1, value, 0.00001).parent(div).input(s.sliderChanged).size(384));
-            s.inputs.push(s.createInput(value).parent(div).input(s.newInput));
+            s.inputs.push(s.createInput(value.toString(), "number").parent(div).input(s.newInput));
         }
         s.permalink = s.createDiv();
 
