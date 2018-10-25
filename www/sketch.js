@@ -2,14 +2,18 @@ let sketch = function (s) {
 
     s.renderEmoji = function () {
         return tf.tidy(() => {
-            s.model.outputLayers[0].predict(tf.tensor2d([s.parameters.map(p => p.value())])).data()
+            const parameters = tf.tensor2d([s.parameters.map(p => p.value())]);
+            s.model.outputLayers[0].predict(parameters).data()
                 .then(arr => {
                     tf.tidy(() => {
                         let b = tf.scalar(0);
                         let a = tf.reshape(arr, [128, 128]).maximum(b);
                         tf.toPixels(a, s.canvas.canvas);
+                        a.dispose();
+                        b.dispose();
                     });
                 });
+            parameters.dispose();
         });
     };
 
