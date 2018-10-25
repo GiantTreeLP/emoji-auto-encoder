@@ -28,7 +28,7 @@ def encoder_128(vector_len: int) -> Model:
     x = MaxPooling2D((4, 4), padding='same', name="shrink_8x8")(x)
     x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
     x = MaxPooling2D((2, 2), padding='same', name="shrink_4x4")(x)
-    x = Flatten(name="matrix-to-vector")(x)
+    x = Flatten(name="matrix_to_vector")(x)
     x = Dense(64, activation=relu, name="link_flat_to_64x1")(x)
     encoded = Dense(vector_len, activation=tanh, name=f"output_{vector_len}x1")(x)
     return Model(input_img, encoded, name="Encoder")
