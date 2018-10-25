@@ -9,7 +9,8 @@ let sketch = function (s) {
                 tf.toPixels(a, s.canvas.canvas);
                 a.dispose();
                 b.dispose();
-            }).then(() => parameters.dispose());
+                parameters.dispose()
+            });
     };
 
     s.sliderChanged = async function () {
