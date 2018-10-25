@@ -8,8 +8,7 @@ let sketch = function (s) {
                 let b = tf.scalar(0);
                 let a = tf.reshape(arr, [128, 128]).maximum(b);
                 b.dispose();
-                tf.toPixels(a, s.canvas.canvas);
-                a.dispose();
+                tf.toPixels(a, s.canvas.canvas).then(() => a.dispose());
             });
     };
 
