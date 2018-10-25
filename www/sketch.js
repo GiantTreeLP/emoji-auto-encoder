@@ -4,12 +4,12 @@ let sketch = function (s) {
         const parameters = tf.tensor2d([s.parameters.map(p => p.value())]);
         return s.model.outputLayers[0].predict(parameters).data()
             .then(arr => {
+                parameters.dispose();
                 let b = tf.scalar(0);
                 let a = tf.reshape(arr, [128, 128]).maximum(b);
+                b.dispose();
                 tf.toPixels(a, s.canvas.canvas);
                 a.dispose();
-                b.dispose();
-                parameters.dispose()
             });
     };
 
