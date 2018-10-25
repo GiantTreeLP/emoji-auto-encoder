@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.min.js"></script>
+    <meta charset="utf-8"/>
+    <!-- Load TensorFlow.js -->
+    <script src="tf.min.js"></script>
+    <script>
+        // input = tf.input({
+        //     shape: [64,],
+        //     name: 'input_64x1'
+        // });
+        // x = tf.layers.dense({
+        //     units: 64,
+        //     activation: 'tanh',
+        //     name: 'activate_input'
+        // }).apply(input);
+        // x = tf.layers.dense({
+        //     units: 64,
+        //     activation: 'relu',
+        //     name: 'link_reshape_64x1'
+        // }).apply(x);
+        // x = tf.layers.reshape({
+        //     targetShape: [8, 8, 1],
+        //     name: 'reshape_8x8'
+        // }).apply(x);
+        // x = tf.layers.conv2d({
+        //     filters: 8,
+        //     kernelSize: [3, 3],
+        //     activation: 'relu',
+        //     padding: 'same'
+        // }).apply(x);
+        // x = tf.layers.upSampling2d({
+        //     size: [2, 2],
+        //     name: 'grow_16x16'
+        // }).apply(x);
+        // x = tf.layers.conv2d({
+        //     filters: 8,
+        //     kernelSize: [3, 3],
+        //     activation: 'relu',
+        //     padding: 'same'
+        // }).apply(x);
+        // x = tf.layers.upSampling2d({
+        //     size: [2, 2],
+        //     name: 'grow_32x32'
+        // }).apply(x);
+        // x = tf.layers.conv2d({
+        //     filters: 8,
+        //     kernelSize: [3, 3],
+        //     activation: 'relu',
+        //     padding: 'same'
+        // }).apply(x);
+        // x = tf.layers.upSampling2d({
+        //     size: [2, 2],
+        //     name: 'grow_64x64'
+        // }).apply(x);
+        // x = tf.layers.conv2d({
+        //     filters: 16,
+        //     kernelSize: [3, 3],
+        //     activation: 'relu',
+        //     padding: 'same'
+        // }).apply(x);
+        // x = tf.layers.upSampling2d({
+        //     size: [2, 2],
+        //     name: 'grow_128x128'
+        // }).apply(x);
+        // output = tf.layers.conv2d({
+        //     filters: 1,
+        //     kernelSize: [5, 5],
+        //     activation: 'tanh',
+        //     padding: 'same'
+        // }).apply(x);
+        //
+        //
+        // const model = tf.model({inputs: input, outputs: output});
+    </script>
+</head>
+<body>
+<script src="sketch.js"></script>
+</body>
+</html>
