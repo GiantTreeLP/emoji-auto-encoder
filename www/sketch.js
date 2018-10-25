@@ -43,12 +43,12 @@ let sketch = function (s) {
         s.parameters = [];
         s.inputs = [];
         const url = new URL(document.location);
-        for (let i = 1; i < 9; i++) {
+        for (let i = 0; i < 8; i++) {
             let div = s.createDiv();
-            s.createSpan(`Variable ${i}: `).parent(div);
-            let value = parseFloat(url.searchParams.get(`v${i - 1}`) || 0);
+            s.createSpan(`Variable ${i + 1}: `).parent(div);
+            let value = parseFloat(url.searchParams.get(`v${i}`) || 0);
             s.parameters.push(s.createSlider(-1, 1, value, 0.00001).parent(div).input(s.sliderChanged).size(384));
-            s.inputs.push(s.createInput(value.toString(), "number").parent(div).input(s.newInput));
+            s.inputs.push(s.createInput(value.toString(), "number").parent(div).input(s.newInput).attribute("step", "0.00001"));
         }
         s.permalink = s.createDiv();
 
