@@ -76,20 +76,21 @@ const denoiser = function (s) {
                 }
             }
             s.inputImage.updatePixels();
-            const pixels = tf.fromPixels(s.inputImage.canvas, 1);
-            const parameter = tf.reshape(pixels, [-1, 128, 128, 1]);
-            pixels.dispose();
-            const prediction = s.model.predict(parameter);
-            prediction.data().then(arr => {
-                const b = tf.scalar(0);
-                const a = tf.reshape(arr, [128, 128]);
-                const c = a.maximum(b);
-                a.dispose();
-                b.dispose();
-                tf.toPixels(c, s.outputImage.canvas).then(() => c.dispose());
-                prediction.dispose();
+            tf.tidy(() => {
+                const parameter = tf.reshape(tf.fromPixels(s.inputImage.canvas, 1), [-1, 128, 128, 1]).asType('float32')
+                    .div(tf.scalar(255));
+                const prediction = s.model.predict(parameter);
+                prediction.data().then(arr => {
+                    const b = tf.scalar(0);
+                    const a = tf.reshape(arr, [128, 128]);
+                    const c = a.maximum(b);
+                    tf.toPixels(c, s.outputImage.canvas).then(() => {
+                        a.dispose();
+                        b.dispose();
+                        c.dispose();
+                    });
+                });
             });
-            parameter.dispose();
         });
     };
 
