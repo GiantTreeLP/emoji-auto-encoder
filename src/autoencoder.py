@@ -7,7 +7,7 @@ from typing import Tuple
 import imageio
 import numpy as np
 from tensorflow.python.keras import Input, Model
-from tensorflow.python.keras.activations import relu, tanh
+from tensorflow.python.keras.activations import relu, tanh, sigmoid
 from tensorflow.python.keras.layers import Conv2D, MaxPooling2D, UpSampling2D, Dense, Flatten, Reshape
 from tensorflow.python.keras.losses import mean_squared_error
 from tensorflow.python.keras.optimizers import Adadelta
@@ -47,7 +47,7 @@ def decoder_128(vector_len: int) -> Model:
     x = UpSampling2D((2, 2), name="grow_64x64")(x)
     x = Conv2D(64, (3, 3), activation=relu, padding='same')(x)
     x = UpSampling2D((2, 2), name="grow_128x128")(x)
-    decoded = Conv2D(1, (5, 5), activation=tanh, padding='same', name="output_128x128")(x)
+    decoded = Conv2D(1, (5, 5), activation=sigmoid, padding='same', name="output_128x128")(x)
 
     return Model(input_decoder, decoded, name="Decoder")
 
