@@ -998,7 +998,7 @@
                       1,
                       1
                     ],
-                    "activation": "sigmoid",
+                    "activation": "tanh",
                     "use_bias": true,
                     "kernel_initializer": {
                       "class_name": "VarianceScaling",
@@ -1081,9 +1081,9 @@
       "optimizer_config": {
         "class_name": "Adadelta",
         "config": {
-          "lr": 0.10000000149011612,
+          "lr": 0.05000000074505806,
           "rho": 0.95,
-          "decay": 9.999999747378752e-05,
+          "decay": 0.0,
           "epsilon": 1e-07
         }
       },
