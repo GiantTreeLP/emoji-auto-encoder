@@ -1,14 +1,14 @@
-let sketch = function (s) {
+const decoder = function (s) {
 
     s.renderEmoji = function () {
         const parameters = tf.tensor2d([s.parameters.map(p => p.value())]);
-        let prediction = s.model.outputLayers[0].predict(parameters);
+        const prediction = s.model.outputLayers[0].predict(parameters);
         prediction.data()
             .then(arr => {
                 parameters.dispose();
-                let b = tf.scalar(0);
-                let a = tf.reshape(arr, [128, 128]);
-                let c = a.maximum(b);
+                const b = tf.scalar(0);
+                const a = tf.reshape(arr, [128, 128]);
+                const c = a.maximum(b);
                 a.dispose();
                 b.dispose();
                 tf.toPixels(c, s.canvas.canvas).then(() => c.dispose());
@@ -49,9 +49,9 @@ let sketch = function (s) {
         s.inputs = [];
         const url = new URL(document.location);
         for (let i = 0; i < 8; i++) {
-            let div = s.createDiv();
+            const div = s.createDiv();
             s.createSpan(`Variable ${i + 1}: `).parent(div);
-            let value = parseFloat(url.searchParams.get(`v${i}`) || 0);
+            const value = parseFloat(url.searchParams.get(`v${i}`) || 0);
             s.parameters.push(s.createSlider(-3, 3, value, 0.0001).parent(div).input(s.sliderChanged).size(384));
             s.inputs.push(s.createInput(value.toString(), "number").parent(div).input(s.newInput).attribute("step", "0.0001"));
         }
@@ -63,4 +63,50 @@ let sketch = function (s) {
     };
 };
 
-let myp5 = new p5(sketch);
+new p5(decoder);
+
+
+const denoiser = function (s) {
+    s.fileloaded = async function (e) {
+        s.loadImage(e.data, (img) => {
+            s.inputImage.loadPixels();
+            for (let y = 0; y < Math.min(s.inputImage.height, img.height); y++) {
+                for (let x = 0; x < Math.min(s.inputImage.width, img.width); x++) {
+                    s.inputImage.set(x, y, s.color(img.get(x, y)));
+                }
+            }
+            s.inputImage.updatePixels();
+            const pixels = tf.fromPixels(s.inputImage.canvas, 1);
+            const parameter = tf.reshape(pixels, [-1, 128, 128, 1]);
+            pixels.dispose();
+            const prediction = s.model.predict(parameter);
+            prediction.data().then(arr => {
+                const b = tf.scalar(0);
+                const a = tf.reshape(arr, [128, 128]);
+                const c = a.maximum(b);
+                a.dispose();
+                b.dispose();
+                tf.toPixels(c, s.outputImage.canvas).then(() => c.dispose());
+                prediction.dispose();
+            });
+            parameter.dispose();
+        });
+    };
+
+    s.setup = async function () {
+        const div = s.createDiv();
+        s.canvas = s.createCanvas(256, 128).parent(div);
+        s.input = s.createFileInput(s.fileloaded).parent(div);
+        s.inputImage = s.createImage(128, 128);
+        s.outputImage = s.createImage(128, 128);
+        s.model = await tf.loadModel("./model.json");
+    };
+
+    s.draw = function () {
+        s.image(s.inputImage, 0, 0, 128, 128);
+        s.image(s.outputImage, 128, 0, 128, 128);
+    };
+
+};
+
+new p5(denoiser);
