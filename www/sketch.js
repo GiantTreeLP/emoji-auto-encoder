@@ -52,8 +52,8 @@ let sketch = function (s) {
             let div = s.createDiv();
             s.createSpan(`Variable ${i + 1}: `).parent(div);
             let value = parseFloat(url.searchParams.get(`v${i}`) || 0);
-            s.parameters.push(s.createSlider(-1, 1, value, 0.00001).parent(div).input(s.sliderChanged).size(384));
-            s.inputs.push(s.createInput(value.toString(), "number").parent(div).input(s.newInput).attribute("step", "0.00001"));
+            s.parameters.push(s.createSlider(-3, 3, value, 0.0001).parent(div).input(s.sliderChanged).size(384));
+            s.inputs.push(s.createInput(value.toString(), "number").parent(div).input(s.newInput).attribute("step", "0.0001"));
         }
         s.permalink = s.createDiv();
 
