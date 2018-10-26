@@ -17,7 +17,7 @@ if __name__ == '__main__':
         names.append(os.path.splitext(os.path.basename(file))[0])
 
     images = np.array(images)
-    images = np.reshape(images, (-1, 128, 128, 1))
+    images = np.reshape(images, (-1, 32, 32, 1))
     images = images.astype('float32') / 255
     _, encoder, decoder = get_model()
 

@@ -7,7 +7,7 @@ const decoder = function (s) {
             .then(arr => {
                 parameters.dispose();
                 const b = tf.scalar(0);
-                const a = tf.reshape(arr, [128, 128]);
+                const a = tf.reshape(arr, [32, 32]);
                 const c = a.maximum(b);
                 a.dispose();
                 b.dispose();
@@ -48,7 +48,7 @@ const decoder = function (s) {
         s.parameters = [];
         s.inputs = [];
         const url = new URL(document.location);
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < 6; i++) {
             const div = s.createDiv();
             s.createSpan(`Variable ${i + 1}: `).parent(div);
             const value = parseFloat(url.searchParams.get(`v${i}`) || 0);
@@ -77,12 +77,17 @@ const denoiser = function (s) {
             }
             s.inputImage.updatePixels();
             tf.tidy(() => {
-                const parameter = tf.reshape(tf.fromPixels(s.inputImage.canvas, 1), [-1, 128, 128, 1]).asType('float32')
+                const parameter = tf.reshape(tf.fromPixels(s.inputImage.canvas, 1), [-1, 32, 32, 1]).asType('float32')
                     .div(tf.scalar(255));
-                const prediction = s.model.predict(parameter);
+                const prediction = s.model.layers[1].predict(parameter);
                 prediction.data().then(arr => {
+                    s.compressed.html(arr.join("<br />"));
+                });
+
+                const prediction2 = s.model.predict(parameter);
+                prediction2.data().then(arr => {
                     const b = tf.scalar(0);
-                    const a = tf.reshape(arr, [128, 128]);
+                    const a = tf.reshape(arr, [32, 32]);
                     const c = a.maximum(b);
                     tf.toPixels(c, s.outputImage.canvas).then(() => {
                         a.dispose();
@@ -98,8 +103,9 @@ const denoiser = function (s) {
         const div = s.createDiv();
         s.canvas = s.createCanvas(256, 128).parent(div);
         s.input = s.createFileInput(s.fileloaded).parent(div);
-        s.inputImage = s.createImage(128, 128);
-        s.outputImage = s.createImage(128, 128);
+        s.inputImage = s.createImage(32, 32);
+        s.outputImage = s.createImage(32, 32);
+        s.compressed = s.createP().parent(div);
         s.model = await tf.loadModel("./model.json");
     };
 
