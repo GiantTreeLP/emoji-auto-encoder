@@ -18,66 +18,69 @@ from image_callback import TensorBoardImage
 LOGS_DIR = "../logs/"
 
 
-def encoder_32(vector_len: int) -> Model:
-    input_img = Input(shape=(32, 32, 1), name="input_32x32")  # 32x32
-    x = Conv2D(16, (3, 3), activation=relu, padding='same', name="Convolution1")(input_img)
-    x = MaxPooling2D((2, 2), padding='same', name="shrink_16x16")(x)  # 16x16
-    x = Conv2D(8, (3, 3), activation=relu, padding='same', name="Convolution2")(x)
-    x = MaxPooling2D((2, 2), padding='same', name="shrink_8x8")(x)  # 8x8
-    x = Conv2D(4, (3, 3), activation=relu, padding='same', name="Convolution3")(x)
-    x = MaxPooling2D((2, 2), padding='same', name="shrink_4x4")(x)  # 4x4
+def encoder_128(vector_len: int) -> Model:
+    input_img = Input(shape=(128, 128, 1), name="input_128x128")  # 128x128
+    x = Conv2D(64, (5, 5), activation=relu, padding='same', name="Convolution1")(input_img)
+    x = MaxPooling2D((2, 2), padding='same', name="shrink_64x64")(x)  # 64x64
+    x = Conv2D(32, (3, 3), activation=relu, padding='same', name="Convolution2")(x)
+    x = MaxPooling2D((2, 2), padding='same', name="shrink_32x32")(x)  # 32x32
+    x = Conv2D(16, (3, 3), activation=relu, padding='same', name="Convolution3")(x)
+    x = MaxPooling2D((4, 4), padding='same', name="shrink_8x8")(x)
+    x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
+    x = MaxPooling2D((2, 2), padding='same', name="shrink_4x4")(x)
     x = Flatten(name="matrix_to_vector")(x)
     x = Dense(64, activation=relu, name="link_flat_to_64x1")(x)
     encoded = Dense(vector_len, activation=tanh, name=f"output_{vector_len}x1")(x)
     return Model(input_img, encoded, name="Encoder")
 
 
-def decoder_32(vector_len: int) -> Model:
+def decoder_128(vector_len: int) -> Model:
     input_decoder = Input(shape=(vector_len,), name=f"input_{vector_len}x1")
-    x = Dense(64, activation=relu, name="activate_input")(input_decoder)
+    x = Dense(64, activation=tanh, name="activate_input")(input_decoder)
     x = Dense(64, activation=relu, name="link_reshape_64x1")(x)
     x = Reshape((8, 8, 1), name="reshape_8x8")(x)
-    x = Conv2D(8, (3, 3), activation=relu, padding='same', name="Deconvolution1")(x)
+    x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
     x = UpSampling2D((2, 2), name="grow_16x16")(x)
-    x = Conv2D(16, (3, 3), activation=relu, padding='same', name="Deconvolution2")(x)
+    x = Conv2D(16, (3, 3), activation=relu, padding='same')(x)
     x = UpSampling2D((2, 2), name="grow_32x32")(x)
-    decoded = Conv2D(1, (3, 3), activation=sigmoid, padding='same', name="output_32x32")(x)
+    x = Conv2D(32, (3, 3), activation=relu, padding='same')(x)
+    x = UpSampling2D((2, 2), name="grow_64x64")(x)
+    x = Conv2D(64, (3, 3), activation=relu, padding='same')(x)
+    x = UpSampling2D((2, 2), name="grow_128x128")(x)
+    decoded = Conv2D(1, (5, 5), activation=sigmoid, padding='same', name="output_128x128")(x)
 
     return Model(input_decoder, decoded, name="Decoder")
 
 
 def create_model(vector_len: int) -> Tuple[Model, Model, Model]:
-    encoder = encoder_32(vector_len)
-    decoder = decoder_32(vector_len)
+    encoder = encoder_128(vector_len)
+    decoder = decoder_128(vector_len)
 
-    input_layer = Input(shape=(32, 32, 1))
+    input_layer = Input(shape=(128, 128, 1))
 
     autoencoder = Model(input_layer, decoder(encoder(input_layer)), name="emoji_autoencoder")
-    autoencoder.compile(optimizer=Adadelta(lr=1, decay=0.00001), loss=mean_squared_error)
+    autoencoder.compile(optimizer=Adadelta(0.1), loss=mean_squared_error)
     return autoencoder, encoder, decoder
 
 
-def train_model(model: Model, images, validation=None):
+def train_model(model: Model, images):
     time_str = datetime.datetime.now().strftime("%y-%m-%d_%H-%M-%S")
 
     callbacks = [
-        TensorBoardImage(f'{LOGS_DIR}{time_str}', "Emojis", images, period=100),
-        CheckpointCallback(f'{LOGS_DIR}{time_str}', period=100),
+        TensorBoardImage(f'{LOGS_DIR}{time_str}', "Emojis", images, period=10),
+        CheckpointCallback(f'{LOGS_DIR}{time_str}', period=10),
     ]
-    model.fit(images, images, epochs=300000, batch_size=len(images),
-              validation_data=(validation, validation),
+    model.fit(images, images, epochs=100000, batch_size=len(images),
+              # validation_data=(images, images),
               callbacks=callbacks,
               verbose=0)
     model.save(f"../logs/{time_str}/model.h5")
 
 
 def get_model():
-    model, encoder, decoder = create_model(6)
+    model, encoder, decoder = create_model(8)
     if path.exists(LOGS_DIR):
-        dirs = [x for x in os.listdir(LOGS_DIR) if
-                not path.isfile(f"{LOGS_DIR}{x}") and path.exists(f"{LOGS_DIR}{x}/model.h5")]
-        if len(dirs) == 0:
-            return model, encoder, decoder
+        dirs = [x for x in os.listdir(LOGS_DIR) if not path.isfile(f"{LOGS_DIR}{x}")]
         dirs.sort()
         model_dir = dirs[-1]
 
@@ -94,17 +97,13 @@ def main():
     images = []
     for file in glob.glob("../emojis/twemoji/png_bw/*.png"):
         images.append(imageio.imread(file))
-    validation = images
-    validation = np.array(validation)
-    validation = np.reshape(validation, (-1, 32, 32, 1))
-    validation = validation.astype('float32') / 255
-    images *= 64  # increase batch input by duplication
+    images *= 1  # increase batch input by duplication
     images = np.array(images)
-    images = np.reshape(images, (-1, 32, 32, 1))
+    images = np.reshape(images, (-1, 128, 128, 1))
     images = images.astype('float32') / 255
     model, _, _ = get_model()
     model.summary()
-    train_model(model, images, validation)
+    train_model(model, images)
 
 
 if __name__ == '__main__':

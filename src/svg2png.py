@@ -75,7 +75,7 @@ def convert_svg_to_png(src: str, dest: str):
         print(f"Converting: {source_file} -> {destination_file}")
         subprocess.call(["../convert.exe",
                          "-background", "None",
-                         "-size", "32x32",
+                         "-size", "128x128",
                          source_file, destination_file],
                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
@@ -89,7 +89,7 @@ def convert_png_to_bw(src: str, dest: str):
             continue
         print(f"Converting: {source_file} -> {destination_file}")
         subprocess.call(["../convert.exe" if sys.platform == "win32" else "convert",
-                         "-size", "32x32",
+                         "-size", "128x128",
                          source_file,
                          "-background", "white",
                          "-alpha", "remove",
@@ -196,9 +196,9 @@ if __name__ == '__main__':
         "1F9D0",
         "1F913",
     ]
-    # download_google(emoji_list, "../emojis/google-noto/png/")
+    download_google(emoji_list, "../emojis/google-noto/png/")
     download_twitter(emoji_list, "../emojis/twemoji/svg/")
-    # download_emojione(emoji_list, "../emojis/emojione/png/")
+    download_emojione(emoji_list, "../emojis/emojione/png/")
     # download_emojitwo(emoji_list, "../emojis/emojitwo/png/")
     convert_svg_to_png("../emojis/twemoji/svg/", "../emojis/twemoji/png/")
     convert_png_to_bw("../emojis/twemoji/png/", "../emojis/twemoji/png_bw/")
