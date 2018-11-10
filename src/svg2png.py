@@ -196,9 +196,9 @@ if __name__ == '__main__':
         "1F9D0",
         "1F913",
     ]
-    download_google(emoji_list, "../emojis/google-noto/png/")
+    # download_google(emoji_list, "../emojis/google-noto/png/")
     download_twitter(emoji_list, "../emojis/twemoji/svg/")
-    download_emojione(emoji_list, "../emojis/emojione/png/")
+    # download_emojione(emoji_list, "../emojis/emojione/png/")
     # download_emojitwo(emoji_list, "../emojis/emojitwo/png/")
     convert_svg_to_png("../emojis/twemoji/svg/", "../emojis/twemoji/png/")
     convert_png_to_bw("../emojis/twemoji/png/", "../emojis/twemoji/png_bw/")
