@@ -6,36 +6,12 @@ from typing import List, Callable
 from urllib import request
 
 
-def create_google_url(emoji: str):
-    return f"https://github.com/googlei18n/noto-emoji/raw/master/png/128/emoji_u{emoji.lower()}.png"
-
-
-def download_google(format_list: List[str], directory: str):
-    download_format(format_list, create_google_url, directory)
-
-
 def create_twitter_url(emoji: str):
     return f"https://github.com/twitter/twemoji/raw/gh-pages/2/svg/{emoji.lower()}.svg"
 
 
 def download_twitter(format_list: List[str], directory: str):
     download_format(format_list, create_twitter_url, directory)
-
-
-def create_emojione_url(emoji: str):
-    return f"https://api.emojione.com/emoji/{emoji.lower()}/download/128"
-
-
-def download_emojione(format_list: List[str], directory: str):
-    download_format(format_list, create_emojione_url, directory, "png")
-
-
-def create_emojitwo_url(emoji: str):
-    return f"https://github.com/EmojiTwo/emojitwo/raw/master/png/128/{emoji.lower()}.png"
-
-
-def download_emojitwo(format_list: List[str], directory: str):
-    download_format(format_list, create_emojitwo_url, directory)
 
 
 def download_emoji(url_lambda: Callable[[str], str], emoji: str, directory: str, extension: str):
@@ -100,6 +76,48 @@ def convert_png_to_bw(src: str, dest: str):
                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
+def convert_jpg_to_bw(src: str, dest: str):
+    os.makedirs(dest, exist_ok=True)
+    for file in os.listdir(src):
+        source_file = f"{src}{file}"
+        destination_file = f"{dest}{os.path.splitext(file)[0]}.jpg"
+        if os.path.exists(destination_file) and os.path.isfile(destination_file):
+            continue
+        print(f"Converting: {source_file} -> {destination_file}")
+        subprocess.call(["../convert.exe" if sys.platform == "win32" else "convert",
+                         "-size", "128x128",
+                         source_file,
+                         "-background", "white",
+                         "-alpha", "remove",
+                         "-colorspace", "gray",
+                         "-depth", "8",
+                         "-type", "grayscale",
+                         "-quality", "20",
+                         destination_file],
+                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
+def convert_jpg_to_bw_1(src: str, dest: str):
+    os.makedirs(dest, exist_ok=True)
+    for file in os.listdir(src):
+        source_file = f"{src}{file}"
+        destination_file = f"{dest}{os.path.splitext(file)[0]}.jpg"
+        if os.path.exists(destination_file) and os.path.isfile(destination_file):
+            continue
+        print(f"Converting: {source_file} -> {destination_file}")
+        subprocess.call(["../convert.exe" if sys.platform == "win32" else "convert",
+                         "-size", "128x128",
+                         source_file,
+                         "-background", "white",
+                         "-alpha", "remove",
+                         "-colorspace", "gray",
+                         "-depth", "8",
+                         "-type", "grayscale",
+                         "-quality", "1",
+                         destination_file],
+                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
 if __name__ == '__main__':
     emoji_list = [
         # subgroup: face-positive
@@ -121,6 +139,7 @@ if __name__ == '__main__':
         "1F617",
         "1F619",
         "1F61A",
+        "263A",
         "1F642",
         "1F917",
         "1F929",
@@ -196,9 +215,8 @@ if __name__ == '__main__':
         "1F9D0",
         "1F913",
     ]
-    # download_google(emoji_list, "../emojis/google-noto/png/")
     download_twitter(emoji_list, "../emojis/twemoji/svg/")
-    # download_emojione(emoji_list, "../emojis/emojione/png/")
-    # download_emojitwo(emoji_list, "../emojis/emojitwo/png/")
     convert_svg_to_png("../emojis/twemoji/svg/", "../emojis/twemoji/png/")
     convert_png_to_bw("../emojis/twemoji/png/", "../emojis/twemoji/png_bw/")
+    convert_jpg_to_bw("../emojis/twemoji/png/", "../emojis/twemoji/jpg/")
+    convert_jpg_to_bw_1("../emojis/twemoji/png/", "../emojis/twemoji/jpg_1/")
