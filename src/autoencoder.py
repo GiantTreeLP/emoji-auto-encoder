@@ -97,7 +97,6 @@ def main():
     images = []
     for file in glob.glob("../emojis/twemoji/png_bw/*.png"):
         images.append(imageio.imread(file))
-    images *= 1  # increase batch input by duplication
     images = np.array(images)
     images = np.reshape(images, (-1, 128, 128, 1))
     images = images.astype('float32') / 255
