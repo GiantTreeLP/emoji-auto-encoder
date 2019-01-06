@@ -77,8 +77,8 @@ def train_model(model: Model, images):
     model.save(f"../logs/{time_str}/model.h5")
 
 
-def get_model():
-    model, encoder, decoder = create_model(8)
+def get_model(vector_len):
+    model, encoder, decoder = create_model(vector_len)
     if path.exists(LOGS_DIR):
         dirs = [x for x in os.listdir(LOGS_DIR) if not path.isfile(f"{LOGS_DIR}{x}")]
         dirs.sort()
@@ -100,7 +100,7 @@ def main():
     images = np.array(images)
     images = np.reshape(images, (-1, 128, 128, 1))
     images = images.astype('float32') / 255
-    model, _, _ = get_model()
+    model, _, _ = get_model(8)
     model.summary()
     train_model(model, images)
 
