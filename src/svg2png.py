@@ -76,7 +76,7 @@ def convert_png_to_bw(src: str, dest: str):
                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
-def convert_jpg_to_bw(src: str, dest: str):
+def convert_jpg_to_bw(src: str, dest: str, quality: int):
     os.makedirs(dest, exist_ok=True)
     for file in os.listdir(src):
         source_file = f"{src}{file}"
@@ -92,7 +92,7 @@ def convert_jpg_to_bw(src: str, dest: str):
                          "-colorspace", "gray",
                          "-depth", "8",
                          "-type", "grayscale",
-                         "-quality", "20",
+                         "-quality", f"{quality}",
                          destination_file],
                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
@@ -218,5 +218,5 @@ if __name__ == '__main__':
     download_twitter(emoji_list, "../emojis/twemoji/svg/")
     convert_svg_to_png("../emojis/twemoji/svg/", "../emojis/twemoji/png/")
     convert_png_to_bw("../emojis/twemoji/png/", "../emojis/twemoji/png_bw/")
-    convert_jpg_to_bw("../emojis/twemoji/png/", "../emojis/twemoji/jpg/")
-    convert_jpg_to_bw_1("../emojis/twemoji/png/", "../emojis/twemoji/jpg_1/")
+    convert_jpg_to_bw("../emojis/twemoji/png/", "../emojis/twemoji/jpg/", quality=20)
+    convert_jpg_to_bw("../emojis/twemoji/png/", "../emojis/twemoji/jpg_1/", quality=1)
