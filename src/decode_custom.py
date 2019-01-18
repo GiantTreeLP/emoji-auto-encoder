@@ -19,7 +19,7 @@ if __name__ == '__main__':
     images = np.array(images)
     images = np.reshape(images, (-1, 128, 128, 1))
     images = images.astype('float32') / 255
-    _, encoder, decoder = get_model()
+    _, encoder, decoder = get_model(8)
 
     prediction = encoder.predict(images)
     print("Encoded:")
