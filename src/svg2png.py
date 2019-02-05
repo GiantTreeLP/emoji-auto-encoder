@@ -49,7 +49,7 @@ def convert_svg_to_png(src: str, dest: str):
         if os.path.exists(destination_file) and os.path.isfile(destination_file):
             continue
         print(f"Converting: {source_file} -> {destination_file}")
-        subprocess.call(["../convert.exe",
+        subprocess.call(["../convert.exe" if sys.platform == "win32" else "convert",
                          "-background", "None",
                          "-size", "128x128",
                          source_file, destination_file],
@@ -93,27 +93,6 @@ def convert_jpg_to_bw(src: str, dest: str, quality: int):
                          "-depth", "8",
                          "-type", "grayscale",
                          "-quality", f"{quality}",
-                         destination_file],
-                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-
-
-def convert_jpg_to_bw_1(src: str, dest: str):
-    os.makedirs(dest, exist_ok=True)
-    for file in os.listdir(src):
-        source_file = f"{src}{file}"
-        destination_file = f"{dest}{os.path.splitext(file)[0]}.jpg"
-        if os.path.exists(destination_file) and os.path.isfile(destination_file):
-            continue
-        print(f"Converting: {source_file} -> {destination_file}")
-        subprocess.call(["../convert.exe" if sys.platform == "win32" else "convert",
-                         "-size", "128x128",
-                         source_file,
-                         "-background", "white",
-                         "-alpha", "remove",
-                         "-colorspace", "gray",
-                         "-depth", "8",
-                         "-type", "grayscale",
-                         "-quality", "1",
                          destination_file],
                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
