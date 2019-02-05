@@ -1,4 +1,7 @@
 # emoji-auto-encoder
+![Dependencies](https://img.shields.io/david/GiantTreeLP/emoji-auto-encoder.svg?style=flat)
+
+Compresses Twemoji emojis down to 32 bytes (8 4-bit floating point numbers).
 
 ## Installation
 
