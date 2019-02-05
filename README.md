@@ -1,5 +1,6 @@
 # emoji-auto-encoder
-![Dependencies](https://img.shields.io/david/GiantTreeLP/emoji-auto-encoder.svg?style=flat)
+![Python Version](https://img.shields.io/badge/Python-3.6%2B-blue.svg)
+[![Requirements Status](https://requires.io/github/GiantTreeLP/emoji-auto-encoder/requirements.svg?branch=master)](https://requires.io/github/GiantTreeLP/emoji-auto-encoder/requirements/?branch=master)
 
 Compresses Twemoji emojis down to 32 bytes (8 4-bit floating point numbers).
 
