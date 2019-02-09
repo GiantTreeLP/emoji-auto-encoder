@@ -6,6 +6,8 @@ Compresses Twemoji emojis down to 32 bytes (8 4-bit floating point numbers).
 
 This repository contains an already pretrained model for web use. You can use it as-is without training by hosting the `www` directory on a web server.
 
+To test the shipped model, just [follow this link](https://gianttreelp.github.io/emoji-auto-encoder/www/).
+
 ## Installation
 
 1. Clone this repository.
