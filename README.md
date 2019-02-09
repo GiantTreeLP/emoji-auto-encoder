@@ -8,6 +8,7 @@ Compresses Twemoji emojis down to 32 bytes (8 4-bit floating point numbers).
 
 1. Clone this repository.
 1. Install Python 3.6 or later and the accompanying `pip3` module.
+1. (Optional) Create a `virtualenv` for this project.
 1. Run `pip3 install -r requirements.txt`.
 1. (Optional) Install the [GPU support libraries](https://www.tensorflow.org/install/gpu) to use your GPU to train the model.
 1. (Optional) (If you installed the GPU libraries) Install the `tensorflow-gpu` package using `pip3 install tensorflow-gpu`.
@@ -17,12 +18,26 @@ Compresses Twemoji emojis down to 32 bytes (8 4-bit floating point numbers).
 1. Navigate to the `src` directory.
 1. Run `python3 svg2png.py` to download and convert the images to a usable format.
 
-## Running
+## Training
 
 Now we are all set, time to train the network:
 
 1. Navigate to the `src` directory.
 1. Run `python3 autoencoder.py`
+
+## Prepare the model for web use
+
+To prepare the trained model for use in the web, use the `tensorflowjs_converter`.
+
+If you have used `virtualenv` to create a virtual environment on Windows, you can find the `tensorflowjs_converter.exe` file in `<virtualenv directory>\Scripts\tensorflowjs_converter.exe`.  
+On other operating systems, the binary should already be in your $PATH and ready to be used.
+
+- `<tensorflowjs_converter> --input_format keras --output_format tensorflowjs logs\<latest directory>\model.h5 www`
+
+## Use the model in your web browser
+
+Due to the use of [`tfjs`](https://github.com/tensorflow/tfjs), you have to host the `www` directory on a web server.  
+Just open the `index.html` file in your browser and use the model or design your own page for it.
 
 ## URLs
 
