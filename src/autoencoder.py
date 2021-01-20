@@ -82,7 +82,11 @@ def get_model(vector_len):
     if path.exists(LOGS_DIR):
         dirs = [x for x in os.listdir(LOGS_DIR) if not path.isfile(f"{LOGS_DIR}{x}")]
         dirs.sort()
-        model_dir = dirs[-1]
+
+        if dirs:
+            model_dir = dirs[-1]
+        else:
+            return model, encoder, decoder
 
         if path.exists(f"{LOGS_DIR}{model_dir}/model.h5"):
             try:
