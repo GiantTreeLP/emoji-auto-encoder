@@ -6,11 +6,12 @@ from typing import Tuple
 
 import imageio
 import numpy as np
+from tensorflow import keras
 from tensorflow.python.keras import Input, Model
-from tensorflow.python.keras.activations import relu, tanh, sigmoid
+from tensorflow.python.keras.activations import relu, sigmoid
 from tensorflow.python.keras.layers import Conv2D, MaxPooling2D, UpSampling2D, Dense, Flatten, Reshape
-from tensorflow.python.keras.losses import mean_squared_error
-from tensorflow.python.keras.optimizers import Adadelta
+from tensorflow.python.keras.losses import mean_absolute_error
+from tensorflow.python.keras.optimizer_v2.adadelta import Adadelta
 
 from checkpoint_callback import CheckpointCallback
 from image_callback import TensorBoardImage

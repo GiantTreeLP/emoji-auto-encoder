@@ -6,23 +6,21 @@ from PIL import Image
 from tensorflow import keras
 
 
-class TensorBoardImage(keras.callbacks.TensorBoard):
+class TensorBoardImage(keras.callbacks.Callback):
 
     def __init__(self, log_dir, tag, images, period=1):
-        super(TensorBoardImage, self).__init__(log_dir=log_dir)
+        super().__init__()
+        self.log_dir = log_dir
         self.tag = tag
         self.sample_image = images[0]
         self.period = period
         self.last_save = 0
+        self.writer = tf.summary.create_file_writer(self.log_dir)
 
     def on_train_begin(self, logs=None):
-        super(TensorBoardImage, self).on_train_begin(logs)
-        img_bytes = io.BytesIO()
-        original = Image.fromarray(np.reshape(self.sample_image * 255, (128, 128)).astype('uint8'), 'L')
-        original.save(img_bytes, 'png')
-        original = tf.Summary.Image(width=original.width, height=original.height,
-                                    encoded_image_string=img_bytes.getvalue())
-        self.writer.add_summary(tf.Summary(value=[tf.Summary.Value(tag="Original", image=original)]))
+        image = (self.sample_image * 255).astype('uint8')
+        with self.writer.as_default():
+            tf.summary.image(name="Original", data=image, step=0)
 
     def on_epoch_end(self, epoch, logs=None):
         super(TensorBoardImage, self).on_epoch_end(epoch, logs)
@@ -31,14 +29,10 @@ class TensorBoardImage(keras.callbacks.TensorBoard):
         if self.last_save >= self.period:
             self.last_save = 0
 
-            prediction = self.model.predict([[self.sample_image]])[0]
-            prediction = prediction * 255
+            prediction = self.model.predict(self.sample_image)
+            prediction = np.clip(prediction, 0, 1) * 255
             prediction = prediction.astype('uint8')
-            prediction = np.reshape(prediction, (128, 128))
-            img_bytes = io.BytesIO()
-            image = Image.fromarray(prediction, "L")
-            image.save(img_bytes, format="png")
-            image = tf.Summary.Image(height=image.height, width=image.width, encoded_image_string=img_bytes.getvalue())
-            summary = tf.Summary(value=[tf.Summary.Value(tag=self.tag, image=image)])
+            prediction = np.reshape(prediction, (-1, 128, 128, 1))
 
-            self.writer.add_summary(summary, epoch)
+            with self.writer.as_default():
+                tf.summary.image(name=self.tag, data=prediction, step=epoch, max_outputs=len(self.sample_image))
