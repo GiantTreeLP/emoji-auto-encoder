@@ -9,7 +9,7 @@ class TensorBoardImage(keras.callbacks.Callback):
         super().__init__()
         self.log_dir = log_dir
         self.tag = tag
-        self.sample_image = images[0]
+        self.sample_image = np.reshape(images[0:3], (-1, 128, 128, 1))
         self.period = period
         self.last_save = 0
         self.writer = tf.summary.create_file_writer(self.log_dir)
