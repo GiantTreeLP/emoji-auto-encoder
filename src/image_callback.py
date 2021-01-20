@@ -1,8 +1,5 @@
-import io
-
 import numpy as np
 import tensorflow as tf
-from PIL import Image
 from tensorflow import keras
 
 

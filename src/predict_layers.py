@@ -4,14 +4,12 @@ from typing import Tuple
 
 import imageio
 import numpy as np
-import tensorflow as tf
 from keras import backend as K
 
 from autoencoder import get_model
 
-
-# os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-# os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 
 def load_images() -> Tuple[np.ndarray, list]:
