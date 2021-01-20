@@ -28,7 +28,7 @@ if __name__ == '__main__':
         print(p)
 
     prediction = decoder.predict(prediction)
-    prediction = (prediction * 255).astype('uint8')
+    prediction = (np.clip(prediction, 0, 1) * 255).astype('uint8')
     print("Decoded and saved.")
 
     os.makedirs("../emojis/twemoji/test", exist_ok=True)
