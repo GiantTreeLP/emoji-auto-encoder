@@ -21,7 +21,7 @@ LOGS_DIR = "../logs/"
 
 def encoder_128(vector_len: int) -> Model:
     input_img = Input(shape=(128, 128, 1), name="input_128x128")  # 128x128
-    x = Conv2D(64, (5, 5), activation=relu, padding='same', name="Convolution1")(input_img)
+    x = Conv2D(64, (3, 3), activation=relu, padding='same', name="Convolution1")(input_img)
     x = MaxPooling2D((2, 2), padding='same', name="shrink_64x64")(x)  # 64x64
     x = Conv2D(32, (3, 3), activation=relu, padding='same', name="Convolution2")(x)
     x = MaxPooling2D((2, 2), padding='same', name="shrink_32x32")(x)  # 32x32
@@ -31,13 +31,13 @@ def encoder_128(vector_len: int) -> Model:
     x = MaxPooling2D((2, 2), padding='same', name="shrink_4x4")(x)
     x = Flatten(name="matrix_to_vector")(x)
     x = Dense(64, activation=relu, name="link_flat_to_64x1")(x)
-    encoded = Dense(vector_len, activation=tanh, name=f"output_{vector_len}x1")(x)
+    encoded = Dense(vector_len, activation=relu, name=f"output_{vector_len}x1")(x)
     return Model(input_img, encoded, name="Encoder")
 
 
 def decoder_128(vector_len: int) -> Model:
     input_decoder = Input(shape=(vector_len,), name=f"input_{vector_len}x1")
-    x = Dense(64, activation=tanh, name="activate_input")(input_decoder)
+    x = Dense(64, activation=relu, name="activate_input")(input_decoder)
     x = Dense(64, activation=relu, name="link_reshape_64x1")(x)
     x = Reshape((8, 8, 1), name="reshape_8x8")(x)
     x = Conv2D(8, (3, 3), activation=relu, padding='same')(x)
@@ -48,7 +48,7 @@ def decoder_128(vector_len: int) -> Model:
     x = UpSampling2D((2, 2), name="grow_64x64")(x)
     x = Conv2D(64, (3, 3), activation=relu, padding='same')(x)
     x = UpSampling2D((2, 2), name="grow_128x128")(x)
-    decoded = Conv2D(1, (5, 5), activation=sigmoid, padding='same', name="output_128x128")(x)
+    decoded = Conv2D(1, (3, 3), activation=sigmoid, padding='same', name="output_128x128")(x)
 
     return Model(input_decoder, decoded, name="Decoder")
 
@@ -60,7 +60,7 @@ def create_model(vector_len: int) -> Tuple[Model, Model, Model]:
     input_layer = Input(shape=(128, 128, 1))
 
     autoencoder = Model(input_layer, decoder(encoder(input_layer)), name="emoji_autoencoder")
-    autoencoder.compile(optimizer=Adadelta(0.1), loss=mean_squared_error)
+    autoencoder.compile(optimizer=Adadelta(learning_rate=1.0, epsilon=1e-6), loss=mean_absolute_error)
     return autoencoder, encoder, decoder
 
 
@@ -68,8 +68,9 @@ def train_model(model: Model, images):
     time_str = datetime.datetime.now().strftime("%y-%m-%d_%H-%M-%S")
 
     callbacks = [
-        TensorBoardImage(f'{LOGS_DIR}{time_str}', "Emojis", images, period=10),
-        CheckpointCallback(f'{LOGS_DIR}{time_str}', period=10),
+        keras.callbacks.TensorBoard(f'{LOGS_DIR}{time_str}'),
+        TensorBoardImage(f'{LOGS_DIR}{time_str}', "Emojis", images, period=100),
+        CheckpointCallback(f'{LOGS_DIR}{time_str}', period=100),
     ]
     model.fit(images, images, epochs=100000, batch_size=len(images),
               # validation_data=(images, images),
