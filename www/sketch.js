@@ -7,11 +7,11 @@ const decoder = function (s) {
             .then(arr => {
                 parameters.dispose();
                 const b = tf.scalar(0);
-                const a = tf.reshape(arr, [128, 128]);
+                const a = tf.reshape(arr, [128, 128, 4]);
                 const c = a.maximum(b);
                 a.dispose();
                 b.dispose();
-                tf.toPixels(c, s.canvas.canvas).then(() => c.dispose());
+                tf.browser.toPixels(c, s.canvas.canvas).then(() => c.dispose());
                 prediction.dispose();
             });
     };
@@ -48,7 +48,7 @@ const decoder = function (s) {
         s.parameters = [];
         s.inputs = [];
         const url = new URL(document.location);
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < 16; i++) {
             const div = s.createDiv();
             s.createSpan(`Variable ${i + 1}: `).parent(div);
             const value = parseFloat(url.searchParams.get(`v${i}`) || 0);
@@ -57,7 +57,7 @@ const decoder = function (s) {
         }
         s.permalink = s.createDiv();
 
-        s.model = await tf.loadModel("./model.json");
+        s.model = await tf.loadLayersModel("./model.json");
         s.newInput();
         s.renderEmoji();
     };
@@ -77,14 +77,14 @@ const denoiser = function (s) {
             }
             s.inputImage.updatePixels();
             tf.tidy(() => {
-                const parameter = tf.reshape(tf.fromPixels(s.inputImage.canvas, 1), [-1, 128, 128, 1]).asType('float32')
+                const parameter = tf.reshape(tf.browser.fromPixels(s.inputImage.canvas, 4), [-1, 128, 128, 4]).asType('float32')
                     .div(tf.scalar(255));
                 const prediction = s.model.predict(parameter);
                 prediction.data().then(arr => {
                     const b = tf.scalar(0);
-                    const a = tf.reshape(arr, [128, 128]);
+                    const a = tf.reshape(arr, [128, 128, 4]);
                     const c = a.maximum(b);
-                    tf.toPixels(c, s.outputImage.canvas).then(() => {
+                    tf.browser.toPixels(c, s.outputImage.canvas).then(() => {
                         a.dispose();
                         b.dispose();
                         c.dispose();
@@ -100,7 +100,7 @@ const denoiser = function (s) {
         s.input = s.createFileInput(s.fileloaded).parent(div);
         s.inputImage = s.createImage(128, 128);
         s.outputImage = s.createImage(128, 128);
-        s.model = await tf.loadModel("./model.json");
+        s.model = await tf.loadLayersModel("./model.json");
     };
 
     s.draw = function () {
