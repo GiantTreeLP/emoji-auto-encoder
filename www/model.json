@@ -1,6 +1,9 @@
 {
+  "format": "layers-model",
+  "generatedBy": "keras v2.4.0",
+  "convertedBy": "TensorFlow.js Converter v2.8.4",
   "modelTopology": {
-    "keras_version": "2.1.6-tf",
+    "keras_version": "2.4.0",
     "backend": "tensorflow",
     "model_config": {
       "class_name": "Model",
@@ -8,7 +11,6 @@
         "name": "emoji_autoencoder",
         "layers": [
           {
-            "name": "input_1",
             "class_name": "InputLayer",
             "config": {
               "batch_input_shape": [
@@ -19,18 +21,18 @@
               ],
               "dtype": "float32",
               "sparse": false,
+              "ragged": false,
               "name": "input_1"
             },
+            "name": "input_1",
             "inbound_nodes": []
           },
           {
-            "name": "Encoder",
             "class_name": "Model",
             "config": {
               "name": "Encoder",
               "layers": [
                 {
-                  "name": "input_128x128",
                   "class_name": "InputLayer",
                   "config": {
                     "batch_input_shape": [
@@ -41,12 +43,13 @@
                     ],
                     "dtype": "float32",
                     "sparse": false,
+                    "ragged": false,
                     "name": "input_128x128"
                   },
+                  "name": "input_128x128",
                   "inbound_nodes": []
                 },
                 {
-                  "name": "Convolution1",
                   "class_name": "Conv2D",
                   "config": {
                     "name": "Convolution1",
@@ -67,23 +70,18 @@
                       1,
                       1
                     ],
+                    "groups": 1,
                     "activation": "relu",
                     "use_bias": true,
                     "kernel_initializer": {
-                      "class_name": "VarianceScaling",
+                      "class_name": "GlorotUniform",
                       "config": {
-                        "scale": 1.0,
-                        "mode": "fan_avg",
-                        "distribution": "uniform",
-                        "seed": null,
-                        "dtype": "float32"
+                        "seed": null
                       }
                     },
                     "bias_initializer": {
                       "class_name": "Zeros",
-                      "config": {
-                        "dtype": "float32"
-                      }
+                      "config": {}
                     },
                     "kernel_regularizer": null,
                     "bias_regularizer": null,
@@ -91,6 +89,7 @@
                     "kernel_constraint": null,
                     "bias_constraint": null
                   },
+                  "name": "Convolution1",
                   "inbound_nodes": [
                     [
                       [
@@ -103,7 +102,6 @@
                   ]
                 },
                 {
-                  "name": "shrink_64x64",
                   "class_name": "MaxPooling2D",
                   "config": {
                     "name": "shrink_64x64",
@@ -120,6 +118,7 @@
                     ],
                     "data_format": "channels_last"
                   },
+                  "name": "shrink_64x64",
                   "inbound_nodes": [
                     [
                       [
@@ -132,7 +131,6 @@
                   ]
                 },
                 {
-                  "name": "Convolution2",
                   "class_name": "Conv2D",
                   "config": {
                     "name": "Convolution2",
@@ -153,23 +151,18 @@
                       1,
                       1
                     ],
+                    "groups": 1,
                     "activation": "relu",
                     "use_bias": true,
                     "kernel_initializer": {
-                      "class_name": "VarianceScaling",
+                      "class_name": "GlorotUniform",
                       "config": {
-                        "scale": 1.0,
-                        "mode": "fan_avg",
-                        "distribution": "uniform",
-                        "seed": null,
-                        "dtype": "float32"
+                        "seed": null
                       }
                     },
                     "bias_initializer": {
                       "class_name": "Zeros",
-                      "config": {
-                        "dtype": "float32"
-                      }
+                      "config": {}
                     },
                     "kernel_regularizer": null,
                     "bias_regularizer": null,
@@ -177,6 +170,7 @@
                     "kernel_constraint": null,
                     "bias_constraint": null
                   },
+                  "name": "Convolution2",
                   "inbound_nodes": [
                     [
                       [
@@ -189,7 +183,6 @@
                   ]
                 },
                 {
-                  "name": "shrink_32x32",
                   "class_name": "MaxPooling2D",
                   "config": {
                     "name": "shrink_32x32",
@@ -206,6 +199,7 @@
                     ],
                     "data_format": "channels_last"
                   },
+                  "name": "shrink_32x32",
                   "inbound_nodes": [
                     [
                       [
@@ -218,7 +212,6 @@
                   ]
                 },
                 {
-                  "name": "Convolution3",
                   "class_name": "Conv2D",
                   "config": {
                     "name": "Convolution3",
@@ -239,23 +232,18 @@
                       1,
                       1
                     ],
+                    "groups": 1,
                     "activation": "relu",
                     "use_bias": true,
                     "kernel_initializer": {
-                      "class_name": "VarianceScaling",
+                      "class_name": "GlorotUniform",
                       "config": {
-                        "scale": 1.0,
-                        "mode": "fan_avg",
-                        "distribution": "uniform",
-                        "seed": null,
-                        "dtype": "float32"
+                        "seed": null
                       }
                     },
                     "bias_initializer": {
                       "class_name": "Zeros",
-                      "config": {
-                        "dtype": "float32"
-                      }
+                      "config": {}
                     },
                     "kernel_regularizer": null,
                     "bias_regularizer": null,
@@ -263,6 +251,7 @@
                     "kernel_constraint": null,
                     "bias_constraint": null
                   },
+                  "name": "Convolution3",
                   "inbound_nodes": [
                     [
                       [
@@ -275,7 +264,6 @@
                   ]
                 },
                 {
-                  "name": "shrink_8x8",
                   "class_name": "MaxPooling2D",
                   "config": {
                     "name": "shrink_8x8",
@@ -292,6 +280,7 @@
                     ],
                     "data_format": "channels_last"
                   },
+                  "name": "shrink_8x8",
                   "inbound_nodes": [
                     [
                       [
@@ -304,7 +293,6 @@
                   ]
                 },
                 {
-                  "name": "conv2d",
                   "class_name": "Conv2D",
                   "config": {
                     "name": "conv2d",
@@ -325,23 +313,18 @@
                       1,
                       1
                     ],
+                    "groups": 1,
                     "activation": "relu",
                     "use_bias": true,
                     "kernel_initializer": {
-                      "class_name": "VarianceScaling",
+                      "class_name": "GlorotUniform",
                       "config": {
-                        "scale": 1.0,
-                        "mode": "fan_avg",
-                        "distribution": "uniform",
-                        "seed": null,
-                        "dtype": "float32"
+                        "seed": null
                       }
                     },
                     "bias_initializer": {
                       "class_name": "Zeros",
-                      "config": {
-                        "dtype": "float32"
-                      }
+                      "config": {}
                     },
                     "kernel_regularizer": null,
                     "bias_regularizer": null,
@@ -349,6 +332,7 @@
                     "kernel_constraint": null,
                     "bias_constraint": null
                   },
+                  "name": "conv2d",
                   "inbound_nodes": [
                     [
                       [
@@ -361,7 +345,6 @@
                   ]
                 },
                 {
-                  "name": "shrink_4x4",
                   "class_name": "MaxPooling2D",
                   "config": {
                     "name": "shrink_4x4",
@@ -378,6 +361,7 @@
                     ],
                     "data_format": "channels_last"
                   },
+                  "name": "shrink_4x4",
                   "inbound_nodes": [
                     [
                       [
@@ -390,7 +374,6 @@
                   ]
                 },
                 {
-                  "name": "matrix_to_vector",
                   "class_name": "Flatten",
                   "config": {
                     "name": "matrix_to_vector",
@@ -398,6 +381,7 @@
                     "dtype": "float32",
                     "data_format": "channels_last"
                   },
+                  "name": "matrix_to_vector",
                   "inbound_nodes": [
                     [
                       [
@@ -410,7 +394,6 @@
                   ]
                 },
                 {
-                  "name": "link_flat_to_64x1",
                   "class_name": "Dense",
                   "config": {
                     "name": "link_flat_to_64x1",
@@ -420,20 +403,14 @@
                     "activation": "relu",
                     "use_bias": true,
                     "kernel_initializer": {
-                      "class_name": "VarianceScaling",
+                      "class_name": "GlorotUniform",
                       "config": {
-                        "scale": 1.0,
-                        "mode": "fan_avg",
-                        "distribution": "uniform",
-                        "seed": null,
-                        "dtype": "float32"
+                        "seed": null
                       }
                     },
                     "bias_initializer": {
                       "class_name": "Zeros",
-                      "config": {
-                        "dtype": "float32"
-                      }
+                      "config": {}
                     },
                     "kernel_regularizer": null,
                     "bias_regularizer": null,
@@ -441,6 +418,7 @@
                     "kernel_constraint": null,
                     "bias_constraint": null
                   },
+                  "name": "link_flat_to_64x1",
                   "inbound_nodes": [
                     [
                       [
@@ -453,30 +431,23 @@
                   ]
                 },
                 {
-                  "name": "output_8x1",
                   "class_name": "Dense",
                   "config": {
                     "name": "output_8x1",
                     "trainable": true,
                     "dtype": "float32",
                     "units": 8,
-                    "activation": "tanh",
+                    "activation": "relu",
                     "use_bias": true,
                     "kernel_initializer": {
-                      "class_name": "VarianceScaling",
+                      "class_name": "GlorotUniform",
                       "config": {
-                        "scale": 1.0,
-                        "mode": "fan_avg",
-                        "distribution": "uniform",
-                        "seed": null,
-                        "dtype": "float32"
+                        "seed": null
                       }
                     },
                     "bias_initializer": {
                       "class_name": "Zeros",
-                      "config": {
-                        "dtype": "float32"
-                      }
+                      "config": {}
                     },
                     "kernel_regularizer": null,
                     "bias_regularizer": null,
@@ -484,6 +455,7 @@
                     "kernel_constraint": null,
                     "bias_constraint": null
                   },
+                  "name": "output_8x1",
                   "inbound_nodes": [
                     [
                       [
@@ -511,6 +483,7 @@
                 ]
               ]
             },
+            "name": "Encoder",
             "inbound_nodes": [
               [
                 [
@@ -523,13 +496,11 @@
             ]
           },
           {
-            "name": "Decoder",
             "class_name": "Model",
             "config": {
               "name": "Decoder",
               "layers": [
                 {
-                  "name": "input_8x1",
                   "class_name": "InputLayer",
                   "config": {
                     "batch_input_shape": [
@@ -538,35 +509,30 @@
                     ],
                     "dtype": "float32",
                     "sparse": false,
+                    "ragged": false,
                     "name": "input_8x1"
                   },
+                  "name": "input_8x1",
                   "inbound_nodes": []
                 },
                 {
-                  "name": "activate_input",
                   "class_name": "Dense",
                   "config": {
                     "name": "activate_input",
                     "trainable": true,
                     "dtype": "float32",
                     "units": 64,
-                    "activation": "tanh",
+                    "activation": "relu",
                     "use_bias": true,
                     "kernel_initializer": {
-                      "class_name": "VarianceScaling",
+                      "class_name": "GlorotUniform",
                       "config": {
-                        "scale": 1.0,
-                        "mode": "fan_avg",
-                        "distribution": "uniform",
-                        "seed": null,
-                        "dtype": "float32"
+                        "seed": null
                       }
                     },
                     "bias_initializer": {
                       "class_name": "Zeros",
-                      "config": {
-                        "dtype": "float32"
-                      }
+                      "config": {}
                     },
                     "kernel_regularizer": null,
                     "bias_regularizer": null,
@@ -574,6 +540,7 @@
                     "kernel_constraint": null,
                     "bias_constraint": null
                   },
+                  "name": "activate_input",
                   "inbound_nodes": [
                     [
                       [
@@ -586,7 +553,6 @@
                   ]
                 },
                 {
-                  "name": "link_reshape_64x1",
                   "class_name": "Dense",
                   "config": {
                     "name": "link_reshape_64x1",
@@ -596,20 +562,14 @@
                     "activation": "relu",
                     "use_bias": true,
                     "kernel_initializer": {
-                      "class_name": "VarianceScaling",
+                      "class_name": "GlorotUniform",
                       "config": {
-                        "scale": 1.0,
-                        "mode": "fan_avg",
-                        "distribution": "uniform",
-                        "seed": null,
-                        "dtype": "float32"
+                        "seed": null
                       }
                     },
                     "bias_initializer": {
                       "class_name": "Zeros",
-                      "config": {
-                        "dtype": "float32"
-                      }
+                      "config": {}
                     },
                     "kernel_regularizer": null,
                     "bias_regularizer": null,
@@ -617,6 +577,7 @@
                     "kernel_constraint": null,
                     "bias_constraint": null
                   },
+                  "name": "link_reshape_64x1",
                   "inbound_nodes": [
                     [
                       [
@@ -629,7 +590,6 @@
                   ]
                 },
                 {
-                  "name": "reshape_8x8",
                   "class_name": "Reshape",
                   "config": {
                     "name": "reshape_8x8",
@@ -641,6 +601,7 @@
                       1
                     ]
                   },
+                  "name": "reshape_8x8",
                   "inbound_nodes": [
                     [
                       [
@@ -653,7 +614,6 @@
                   ]
                 },
                 {
-                  "name": "conv2d_1",
                   "class_name": "Conv2D",
                   "config": {
                     "name": "conv2d_1",
@@ -674,23 +634,18 @@
                       1,
                       1
                     ],
+                    "groups": 1,
                     "activation": "relu",
                     "use_bias": true,
                     "kernel_initializer": {
-                      "class_name": "VarianceScaling",
+                      "class_name": "GlorotUniform",
                       "config": {
-                        "scale": 1.0,
-                        "mode": "fan_avg",
-                        "distribution": "uniform",
-                        "seed": null,
-                        "dtype": "float32"
+                        "seed": null
                       }
                     },
                     "bias_initializer": {
                       "class_name": "Zeros",
-                      "config": {
-                        "dtype": "float32"
-                      }
+                      "config": {}
                     },
                     "kernel_regularizer": null,
                     "bias_regularizer": null,
@@ -698,6 +653,7 @@
                     "kernel_constraint": null,
                     "bias_constraint": null
                   },
+                  "name": "conv2d_1",
                   "inbound_nodes": [
                     [
                       [
@@ -710,7 +666,6 @@
                   ]
                 },
                 {
-                  "name": "grow_16x16",
                   "class_name": "UpSampling2D",
                   "config": {
                     "name": "grow_16x16",
@@ -720,8 +675,10 @@
                       2,
                       2
                     ],
-                    "data_format": "channels_last"
+                    "data_format": "channels_last",
+                    "interpolation": "nearest"
                   },
+                  "name": "grow_16x16",
                   "inbound_nodes": [
                     [
                       [
@@ -734,7 +691,6 @@
                   ]
                 },
                 {
-                  "name": "conv2d_2",
                   "class_name": "Conv2D",
                   "config": {
                     "name": "conv2d_2",
@@ -755,23 +711,18 @@
                       1,
                       1
                     ],
+                    "groups": 1,
                     "activation": "relu",
                     "use_bias": true,
                     "kernel_initializer": {
-                      "class_name": "VarianceScaling",
+                      "class_name": "GlorotUniform",
                       "config": {
-                        "scale": 1.0,
-                        "mode": "fan_avg",
-                        "distribution": "uniform",
-                        "seed": null,
-                        "dtype": "float32"
+                        "seed": null
                       }
                     },
                     "bias_initializer": {
                       "class_name": "Zeros",
-                      "config": {
-                        "dtype": "float32"
-                      }
+                      "config": {}
                     },
                     "kernel_regularizer": null,
                     "bias_regularizer": null,
@@ -779,6 +730,7 @@
                     "kernel_constraint": null,
                     "bias_constraint": null
                   },
+                  "name": "conv2d_2",
                   "inbound_nodes": [
                     [
                       [
@@ -791,7 +743,6 @@
                   ]
                 },
                 {
-                  "name": "grow_32x32",
                   "class_name": "UpSampling2D",
                   "config": {
                     "name": "grow_32x32",
@@ -801,8 +752,10 @@
                       2,
                       2
                     ],
-                    "data_format": "channels_last"
+                    "data_format": "channels_last",
+                    "interpolation": "nearest"
                   },
+                  "name": "grow_32x32",
                   "inbound_nodes": [
                     [
                       [
@@ -815,7 +768,6 @@
                   ]
                 },
                 {
-                  "name": "conv2d_3",
                   "class_name": "Conv2D",
                   "config": {
                     "name": "conv2d_3",
@@ -836,23 +788,18 @@
                       1,
                       1
                     ],
+                    "groups": 1,
                     "activation": "relu",
                     "use_bias": true,
                     "kernel_initializer": {
-                      "class_name": "VarianceScaling",
+                      "class_name": "GlorotUniform",
                       "config": {
-                        "scale": 1.0,
-                        "mode": "fan_avg",
-                        "distribution": "uniform",
-                        "seed": null,
-                        "dtype": "float32"
+                        "seed": null
                       }
                     },
                     "bias_initializer": {
                       "class_name": "Zeros",
-                      "config": {
-                        "dtype": "float32"
-                      }
+                      "config": {}
                     },
                     "kernel_regularizer": null,
                     "bias_regularizer": null,
@@ -860,6 +807,7 @@
                     "kernel_constraint": null,
                     "bias_constraint": null
                   },
+                  "name": "conv2d_3",
                   "inbound_nodes": [
                     [
                       [
@@ -872,7 +820,6 @@
                   ]
                 },
                 {
-                  "name": "grow_64x64",
                   "class_name": "UpSampling2D",
                   "config": {
                     "name": "grow_64x64",
@@ -882,8 +829,10 @@
                       2,
                       2
                     ],
-                    "data_format": "channels_last"
+                    "data_format": "channels_last",
+                    "interpolation": "nearest"
                   },
+                  "name": "grow_64x64",
                   "inbound_nodes": [
                     [
                       [
@@ -896,7 +845,6 @@
                   ]
                 },
                 {
-                  "name": "conv2d_4",
                   "class_name": "Conv2D",
                   "config": {
                     "name": "conv2d_4",
@@ -917,23 +865,18 @@
                       1,
                       1
                     ],
+                    "groups": 1,
                     "activation": "relu",
                     "use_bias": true,
                     "kernel_initializer": {
-                      "class_name": "VarianceScaling",
+                      "class_name": "GlorotUniform",
                       "config": {
-                        "scale": 1.0,
-                        "mode": "fan_avg",
-                        "distribution": "uniform",
-                        "seed": null,
-                        "dtype": "float32"
+                        "seed": null
                       }
                     },
                     "bias_initializer": {
                       "class_name": "Zeros",
-                      "config": {
-                        "dtype": "float32"
-                      }
+                      "config": {}
                     },
                     "kernel_regularizer": null,
                     "bias_regularizer": null,
@@ -941,6 +884,7 @@
                     "kernel_constraint": null,
                     "bias_constraint": null
                   },
+                  "name": "conv2d_4",
                   "inbound_nodes": [
                     [
                       [
@@ -953,7 +897,6 @@
                   ]
                 },
                 {
-                  "name": "grow_128x128",
                   "class_name": "UpSampling2D",
                   "config": {
                     "name": "grow_128x128",
@@ -963,8 +906,10 @@
                       2,
                       2
                     ],
-                    "data_format": "channels_last"
+                    "data_format": "channels_last",
+                    "interpolation": "nearest"
                   },
+                  "name": "grow_128x128",
                   "inbound_nodes": [
                     [
                       [
@@ -977,7 +922,6 @@
                   ]
                 },
                 {
-                  "name": "output_128x128",
                   "class_name": "Conv2D",
                   "config": {
                     "name": "output_128x128",
@@ -998,23 +942,18 @@
                       1,
                       1
                     ],
-                    "activation": "sigmoid",
+                    "groups": 1,
+                    "activation": "relu",
                     "use_bias": true,
                     "kernel_initializer": {
-                      "class_name": "VarianceScaling",
+                      "class_name": "GlorotUniform",
                       "config": {
-                        "scale": 1.0,
-                        "mode": "fan_avg",
-                        "distribution": "uniform",
-                        "seed": null,
-                        "dtype": "float32"
+                        "seed": null
                       }
                     },
                     "bias_initializer": {
                       "class_name": "Zeros",
-                      "config": {
-                        "dtype": "float32"
-                      }
+                      "config": {}
                     },
                     "kernel_regularizer": null,
                     "bias_regularizer": null,
@@ -1022,6 +961,7 @@
                     "kernel_constraint": null,
                     "bias_constraint": null
                   },
+                  "name": "output_128x128",
                   "inbound_nodes": [
                     [
                       [
@@ -1049,6 +989,7 @@
                 ]
               ]
             },
+            "name": "Decoder",
             "inbound_nodes": [
               [
                 [
@@ -1078,26 +1019,26 @@
       }
     },
     "training_config": {
+      "loss": "mean_squared_error",
+      "metrics": null,
+      "weighted_metrics": null,
+      "loss_weights": null,
       "optimizer_config": {
         "class_name": "Adadelta",
         "config": {
-          "lr": 0.10000000149011612,
-          "rho": 0.95,
+          "name": "Adadelta",
+          "learning_rate": 0.0010000000474974513,
           "decay": 0.0,
+          "rho": 0.949999988079071,
           "epsilon": 1e-07
         }
-      },
-      "loss": "mean_squared_error",
-      "metrics": [],
-      "weighted_metrics": null,
-      "sample_weight_mode": null,
-      "loss_weights": null
+      }
     }
   },
   "weightsManifest": [
     {
       "paths": [
-        "group1-shard1of1"
+        "group1-shard1of1.bin"
       ],
       "weights": [
         {
