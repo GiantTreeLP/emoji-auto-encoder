@@ -7,9 +7,8 @@ const decoder = function (s) {
             .then(arr => {
                 parameters.dispose();
                 const b = tf.scalar(0);
-                const d = tf.scalar(1);
-                const a = tf.reshape(arr, [128, 128, 1]);
-                const c = a.maximum(b).minimum(d);
+                const a = tf.reshape(arr, [128, 128, 4]);
+                const c = a.maximum(b);
                 a.dispose();
                 b.dispose();
                 tf.browser.toPixels(c, s.canvas.canvas).then(() => c.dispose());
@@ -49,7 +48,7 @@ const decoder = function (s) {
         s.parameters = [];
         s.inputs = [];
         const url = new URL(document.location);
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < 16; i++) {
             const div = s.createDiv();
             s.createSpan(`Variable ${i + 1}: `).parent(div);
             const value = parseFloat(url.searchParams.get(`v${i}`) || 0);
@@ -78,14 +77,13 @@ const denoiser = function (s) {
             }
             s.inputImage.updatePixels();
             tf.tidy(() => {
-                const parameter = tf.reshape(tf.browser.fromPixels(s.inputImage.canvas, 4), [-1, 128, 128, 1]).asType('float32')
+                const parameter = tf.reshape(tf.browser.fromPixels(s.inputImage.canvas, 4), [-1, 128, 128, 4]).asType('float32')
                     .div(tf.scalar(255));
                 const prediction = s.model.predict(parameter);
                 prediction.data().then(arr => {
                     const b = tf.scalar(0);
-                    const d = tf.scalar(1);
-                    const a = tf.reshape(arr, [128, 128]);
-                    const c = a.maximum(b).minimum(d);
+                    const a = tf.reshape(arr, [128, 128, 4]);
+                    const c = a.maximum(b);
                     tf.browser.toPixels(c, s.outputImage.canvas).then(() => {
                         a.dispose();
                         b.dispose();

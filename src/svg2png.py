@@ -7,7 +7,7 @@ from urllib import request
 
 
 def create_twitter_url(emoji: str):
-    return f"https://github.com/twitter/twemoji/raw/gh-pages/2/svg/{emoji.lower()}.svg"
+    return f"https://raw.githubusercontent.com/twitter/twemoji/gh-pages/v/13.0.1/svg/{emoji.lower()}.svg"
 
 
 def download_twitter(format_list: List[str], directory: str):

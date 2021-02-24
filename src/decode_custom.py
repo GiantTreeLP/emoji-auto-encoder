@@ -12,14 +12,14 @@ from autoencoder import get_model
 if __name__ == '__main__':
     images = []
     names = []
-    for file in glob.glob("../emojis/twemoji/png_bw/*.png"):
+    for file in glob.glob("../emojis/twemoji/png/*.png"):
         images.append(imageio.imread(file))
         names.append(os.path.splitext(os.path.basename(file))[0])
 
     images = np.array(images)
-    images = np.reshape(images, (-1, 128, 128, 1))
+    images = np.reshape(images, (-1, 128, 128, 4))
     images = images.astype('float32') / 255
-    _, encoder, decoder = get_model(8)
+    _, encoder, decoder = get_model(16)
 
     prediction = encoder.predict(images)
     print("Encoded:")

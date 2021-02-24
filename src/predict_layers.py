@@ -4,7 +4,7 @@ from typing import Tuple
 
 import imageio
 import numpy as np
-from keras import backend as K
+from keract import get_activations
 
 from autoencoder import get_model
 
@@ -15,11 +15,11 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 def load_images() -> Tuple[np.ndarray, list]:
     images = []
     names = []
-    for file in glob.glob("../emojis/twemoji/png_bw/*.png"):
+    for file in glob.glob("../emojis/twemoji/png/*.png"):
         images.append(imageio.imread(file))
         names.append(os.path.splitext(os.path.basename(file))[0])
     images = np.array(images)
-    images = np.reshape(images, (-1, 128, 128, 1))
+    images = np.reshape(images, (len(images), -1, 128, 128, 4))
     images = images.astype('float32') / 255
     return images, names
 
@@ -27,32 +27,35 @@ def load_images() -> Tuple[np.ndarray, list]:
 def main():
     os.makedirs("../test/", exist_ok=True)
     images, names = load_images()
-    _, encoder, decoder = get_model(8)
-    image = images[0]
-    intermediate_output = None
-    for i in range(0, len(encoder.layers)):
-        os.makedirs(f"../test/encoder_{i}", exist_ok=True)
-        model = K.function([encoder.layers[0].input, K.learning_phase()], [encoder.layers[i].output])
-        intermediate_output = model([[image]])[0]
-        if len(intermediate_output.shape) == 4:
-            intermediate_output = np.swapaxes(intermediate_output, 0, 3)
-            intermediate_output = (intermediate_output * 255).astype('uint8')
-            for j in range(len(intermediate_output)):
-                imageio.imwrite(f"../test/encoder_{i}/{j}.png", intermediate_output[j], "png")
+    whole_model, encoder, decoder = get_model(16)
+    image = images[76]
 
-    encoded = intermediate_output
+    intermediate_output = get_activations(encoder, image)
 
-    for i in range(1, len(decoder.layers)):
-        os.makedirs(f"../test/decoder_{i}", exist_ok=True)
-        model = K.function([decoder.layers[0].input, K.learning_phase()], [decoder.layers[i].output])
-        intermediate_output = model([encoded])[0]
-        if len(intermediate_output.shape) == 4:
-            intermediate_output = np.swapaxes(intermediate_output, 0, 3)
-            intermediate_output = (intermediate_output * 255).astype('uint8')
-            for j in range(len(intermediate_output)):
-                imageio.imwrite(f"../test/decoder_{i}/{j}.png", intermediate_output[j], "png")
-        if len(intermediate_output.shape) == 2:
-            pass
+    for i, (key, output) in enumerate(intermediate_output.items(), start=1):
+        intermediate_images = (output * 255).astype('uint8')
+        if len(output.shape) == 4:
+            intermediate_images = np.swapaxes(intermediate_images, 0, 3)
+
+            os.makedirs(f"../test/encoder_{i}", exist_ok=True)
+
+            for j in range(len(intermediate_images)):
+                im = intermediate_images[j]
+                imageio.imwrite(f"../test/encoder_{i}/{j}.png", im, "png")
+
+    value = encoder.predict(image)
+
+    intermediate_output = get_activations(decoder, value)
+    for i, (key, output) in enumerate(intermediate_output.items(), start=1):
+        intermediate_images = (output * 255).astype('uint8')
+        if len(output.shape) == 4:
+            intermediate_images = np.swapaxes(intermediate_images, 0, 3)
+
+            os.makedirs(f"../test/decoder_{i}", exist_ok=True)
+
+            for j in range(len(intermediate_images)):
+                im = intermediate_images[j]
+                imageio.imwrite(f"../test/decoder_{i}/{j}.png", im, "png")
 
 
 if __name__ == '__main__':

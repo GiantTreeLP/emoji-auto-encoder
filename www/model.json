@@ -17,7 +17,7 @@
                 null,
                 128,
                 128,
-                1
+                4
               ],
               "dtype": "float32",
               "sparse": false,
@@ -39,7 +39,7 @@
                       null,
                       128,
                       128,
-                      1
+                      4
                     ],
                     "dtype": "float32",
                     "sparse": false,
@@ -61,8 +61,8 @@
                       5
                     ],
                     "strides": [
-                      1,
-                      1
+                      2,
+                      2
                     ],
                     "padding": "same",
                     "data_format": "channels_last",
@@ -102,35 +102,6 @@
                   ]
                 },
                 {
-                  "class_name": "MaxPooling2D",
-                  "config": {
-                    "name": "shrink_64x64",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "pool_size": [
-                      2,
-                      2
-                    ],
-                    "padding": "same",
-                    "strides": [
-                      2,
-                      2
-                    ],
-                    "data_format": "channels_last"
-                  },
-                  "name": "shrink_64x64",
-                  "inbound_nodes": [
-                    [
-                      [
-                        "Convolution1",
-                        0,
-                        0,
-                        {}
-                      ]
-                    ]
-                  ]
-                },
-                {
                   "class_name": "Conv2D",
                   "config": {
                     "name": "Convolution2",
@@ -138,12 +109,12 @@
                     "dtype": "float32",
                     "filters": 32,
                     "kernel_size": [
-                      3,
-                      3
+                      5,
+                      5
                     ],
                     "strides": [
-                      1,
-                      1
+                      2,
+                      2
                     ],
                     "padding": "same",
                     "data_format": "channels_last",
@@ -174,36 +145,7 @@
                   "inbound_nodes": [
                     [
                       [
-                        "shrink_64x64",
-                        0,
-                        0,
-                        {}
-                      ]
-                    ]
-                  ]
-                },
-                {
-                  "class_name": "MaxPooling2D",
-                  "config": {
-                    "name": "shrink_32x32",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "pool_size": [
-                      2,
-                      2
-                    ],
-                    "padding": "same",
-                    "strides": [
-                      2,
-                      2
-                    ],
-                    "data_format": "channels_last"
-                  },
-                  "name": "shrink_32x32",
-                  "inbound_nodes": [
-                    [
-                      [
-                        "Convolution2",
+                        "Convolution1",
                         0,
                         0,
                         {}
@@ -223,8 +165,8 @@
                       3
                     ],
                     "strides": [
-                      1,
-                      1
+                      2,
+                      2
                     ],
                     "padding": "same",
                     "data_format": "channels_last",
@@ -255,36 +197,7 @@
                   "inbound_nodes": [
                     [
                       [
-                        "shrink_32x32",
-                        0,
-                        0,
-                        {}
-                      ]
-                    ]
-                  ]
-                },
-                {
-                  "class_name": "MaxPooling2D",
-                  "config": {
-                    "name": "shrink_8x8",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "pool_size": [
-                      4,
-                      4
-                    ],
-                    "padding": "same",
-                    "strides": [
-                      4,
-                      4
-                    ],
-                    "data_format": "channels_last"
-                  },
-                  "name": "shrink_8x8",
-                  "inbound_nodes": [
-                    [
-                      [
-                        "Convolution3",
+                        "Convolution2",
                         0,
                         0,
                         {}
@@ -304,8 +217,8 @@
                       3
                     ],
                     "strides": [
-                      1,
-                      1
+                      2,
+                      2
                     ],
                     "padding": "same",
                     "data_format": "channels_last",
@@ -336,36 +249,7 @@
                   "inbound_nodes": [
                     [
                       [
-                        "shrink_8x8",
-                        0,
-                        0,
-                        {}
-                      ]
-                    ]
-                  ]
-                },
-                {
-                  "class_name": "MaxPooling2D",
-                  "config": {
-                    "name": "shrink_4x4",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "pool_size": [
-                      2,
-                      2
-                    ],
-                    "padding": "same",
-                    "strides": [
-                      2,
-                      2
-                    ],
-                    "data_format": "channels_last"
-                  },
-                  "name": "shrink_4x4",
-                  "inbound_nodes": [
-                    [
-                      [
-                        "conv2d",
+                        "Convolution3",
                         0,
                         0,
                         {}
@@ -385,7 +269,7 @@
                   "inbound_nodes": [
                     [
                       [
-                        "shrink_4x4",
+                        "conv2d",
                         0,
                         0,
                         {}
@@ -396,11 +280,11 @@
                 {
                   "class_name": "Dense",
                   "config": {
-                    "name": "link_flat_to_64x1",
+                    "name": "output_16x1",
                     "trainable": true,
                     "dtype": "float32",
-                    "units": 64,
-                    "activation": "relu",
+                    "units": 16,
+                    "activation": "tanh",
                     "use_bias": true,
                     "kernel_initializer": {
                       "class_name": "GlorotUniform",
@@ -418,48 +302,11 @@
                     "kernel_constraint": null,
                     "bias_constraint": null
                   },
-                  "name": "link_flat_to_64x1",
+                  "name": "output_16x1",
                   "inbound_nodes": [
                     [
                       [
                         "matrix_to_vector",
-                        0,
-                        0,
-                        {}
-                      ]
-                    ]
-                  ]
-                },
-                {
-                  "class_name": "Dense",
-                  "config": {
-                    "name": "output_8x1",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "units": 8,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                      "class_name": "GlorotUniform",
-                      "config": {
-                        "seed": null
-                      }
-                    },
-                    "bias_initializer": {
-                      "class_name": "Zeros",
-                      "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                  },
-                  "name": "output_8x1",
-                  "inbound_nodes": [
-                    [
-                      [
-                        "link_flat_to_64x1",
                         0,
                         0,
                         {}
@@ -477,7 +324,7 @@
               ],
               "output_layers": [
                 [
-                  "output_8x1",
+                  "output_16x1",
                   0,
                   0
                 ]
@@ -505,14 +352,14 @@
                   "config": {
                     "batch_input_shape": [
                       null,
-                      8
+                      16
                     ],
                     "dtype": "float32",
                     "sparse": false,
                     "ragged": false,
-                    "name": "input_8x1"
+                    "name": "input_16x1"
                   },
-                  "name": "input_8x1",
+                  "name": "input_16x1",
                   "inbound_nodes": []
                 },
                 {
@@ -522,7 +369,7 @@
                     "trainable": true,
                     "dtype": "float32",
                     "units": 64,
-                    "activation": "relu",
+                    "activation": "tanh",
                     "use_bias": true,
                     "kernel_initializer": {
                       "class_name": "GlorotUniform",
@@ -544,44 +391,7 @@
                   "inbound_nodes": [
                     [
                       [
-                        "input_8x1",
-                        0,
-                        0,
-                        {}
-                      ]
-                    ]
-                  ]
-                },
-                {
-                  "class_name": "Dense",
-                  "config": {
-                    "name": "link_reshape_64x1",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "units": 64,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                      "class_name": "GlorotUniform",
-                      "config": {
-                        "seed": null
-                      }
-                    },
-                    "bias_initializer": {
-                      "class_name": "Zeros",
-                      "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                  },
-                  "name": "link_reshape_64x1",
-                  "inbound_nodes": [
-                    [
-                      [
-                        "activate_input",
+                        "input_16x1",
                         0,
                         0,
                         {}
@@ -605,7 +415,7 @@
                   "inbound_nodes": [
                     [
                       [
-                        "link_reshape_64x1",
+                        "activate_input",
                         0,
                         0,
                         {}
@@ -614,86 +424,9 @@
                   ]
                 },
                 {
-                  "class_name": "Conv2D",
+                  "class_name": "Conv2DTranspose",
                   "config": {
-                    "name": "conv2d_1",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 8,
-                    "kernel_size": [
-                      3,
-                      3
-                    ],
-                    "strides": [
-                      1,
-                      1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                      1,
-                      1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                      "class_name": "GlorotUniform",
-                      "config": {
-                        "seed": null
-                      }
-                    },
-                    "bias_initializer": {
-                      "class_name": "Zeros",
-                      "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                  },
-                  "name": "conv2d_1",
-                  "inbound_nodes": [
-                    [
-                      [
-                        "reshape_8x8",
-                        0,
-                        0,
-                        {}
-                      ]
-                    ]
-                  ]
-                },
-                {
-                  "class_name": "UpSampling2D",
-                  "config": {
-                    "name": "grow_16x16",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "size": [
-                      2,
-                      2
-                    ],
-                    "data_format": "channels_last",
-                    "interpolation": "nearest"
-                  },
-                  "name": "grow_16x16",
-                  "inbound_nodes": [
-                    [
-                      [
-                        "conv2d_1",
-                        0,
-                        0,
-                        {}
-                      ]
-                    ]
-                  ]
-                },
-                {
-                  "class_name": "Conv2D",
-                  "config": {
-                    "name": "conv2d_2",
+                    "name": "conv2d_transpose",
                     "trainable": true,
                     "dtype": "float32",
                     "filters": 16,
@@ -728,13 +461,14 @@
                     "bias_regularizer": null,
                     "activity_regularizer": null,
                     "kernel_constraint": null,
-                    "bias_constraint": null
+                    "bias_constraint": null,
+                    "output_padding": null
                   },
-                  "name": "conv2d_2",
+                  "name": "conv2d_transpose",
                   "inbound_nodes": [
                     [
                       [
-                        "grow_16x16",
+                        "reshape_8x8",
                         0,
                         0,
                         {}
@@ -743,34 +477,9 @@
                   ]
                 },
                 {
-                  "class_name": "UpSampling2D",
+                  "class_name": "Conv2DTranspose",
                   "config": {
-                    "name": "grow_32x32",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "size": [
-                      2,
-                      2
-                    ],
-                    "data_format": "channels_last",
-                    "interpolation": "nearest"
-                  },
-                  "name": "grow_32x32",
-                  "inbound_nodes": [
-                    [
-                      [
-                        "conv2d_2",
-                        0,
-                        0,
-                        {}
-                      ]
-                    ]
-                  ]
-                },
-                {
-                  "class_name": "Conv2D",
-                  "config": {
-                    "name": "conv2d_3",
+                    "name": "conv2d_transpose_1",
                     "trainable": true,
                     "dtype": "float32",
                     "filters": 32,
@@ -779,8 +488,8 @@
                       3
                     ],
                     "strides": [
-                      1,
-                      1
+                      2,
+                      2
                     ],
                     "padding": "same",
                     "data_format": "channels_last",
@@ -805,13 +514,14 @@
                     "bias_regularizer": null,
                     "activity_regularizer": null,
                     "kernel_constraint": null,
-                    "bias_constraint": null
+                    "bias_constraint": null,
+                    "output_padding": null
                   },
-                  "name": "conv2d_3",
+                  "name": "conv2d_transpose_1",
                   "inbound_nodes": [
                     [
                       [
-                        "grow_32x32",
+                        "conv2d_transpose",
                         0,
                         0,
                         {}
@@ -820,121 +530,19 @@
                   ]
                 },
                 {
-                  "class_name": "UpSampling2D",
+                  "class_name": "Conv2DTranspose",
                   "config": {
-                    "name": "grow_64x64",
+                    "name": "conv2d_transpose_2",
                     "trainable": true,
                     "dtype": "float32",
-                    "size": [
-                      2,
-                      2
-                    ],
-                    "data_format": "channels_last",
-                    "interpolation": "nearest"
-                  },
-                  "name": "grow_64x64",
-                  "inbound_nodes": [
-                    [
-                      [
-                        "conv2d_3",
-                        0,
-                        0,
-                        {}
-                      ]
-                    ]
-                  ]
-                },
-                {
-                  "class_name": "Conv2D",
-                  "config": {
-                    "name": "conv2d_4",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 64,
-                    "kernel_size": [
-                      3,
-                      3
-                    ],
-                    "strides": [
-                      1,
-                      1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                      1,
-                      1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                      "class_name": "GlorotUniform",
-                      "config": {
-                        "seed": null
-                      }
-                    },
-                    "bias_initializer": {
-                      "class_name": "Zeros",
-                      "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                  },
-                  "name": "conv2d_4",
-                  "inbound_nodes": [
-                    [
-                      [
-                        "grow_64x64",
-                        0,
-                        0,
-                        {}
-                      ]
-                    ]
-                  ]
-                },
-                {
-                  "class_name": "UpSampling2D",
-                  "config": {
-                    "name": "grow_128x128",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "size": [
-                      2,
-                      2
-                    ],
-                    "data_format": "channels_last",
-                    "interpolation": "nearest"
-                  },
-                  "name": "grow_128x128",
-                  "inbound_nodes": [
-                    [
-                      [
-                        "conv2d_4",
-                        0,
-                        0,
-                        {}
-                      ]
-                    ]
-                  ]
-                },
-                {
-                  "class_name": "Conv2D",
-                  "config": {
-                    "name": "output_128x128",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 1,
+                    "filters": 32,
                     "kernel_size": [
                       5,
                       5
                     ],
                     "strides": [
-                      1,
-                      1
+                      2,
+                      2
                     ],
                     "padding": "same",
                     "data_format": "channels_last",
@@ -959,13 +567,120 @@
                     "bias_regularizer": null,
                     "activity_regularizer": null,
                     "kernel_constraint": null,
-                    "bias_constraint": null
+                    "bias_constraint": null,
+                    "output_padding": null
+                  },
+                  "name": "conv2d_transpose_2",
+                  "inbound_nodes": [
+                    [
+                      [
+                        "conv2d_transpose_1",
+                        0,
+                        0,
+                        {}
+                      ]
+                    ]
+                  ]
+                },
+                {
+                  "class_name": "Conv2DTranspose",
+                  "config": {
+                    "name": "conv2d_transpose_3",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 64,
+                    "kernel_size": [
+                      5,
+                      5
+                    ],
+                    "strides": [
+                      2,
+                      2
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                      1,
+                      1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                      "class_name": "GlorotUniform",
+                      "config": {
+                        "seed": null
+                      }
+                    },
+                    "bias_initializer": {
+                      "class_name": "Zeros",
+                      "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null,
+                    "output_padding": null
+                  },
+                  "name": "conv2d_transpose_3",
+                  "inbound_nodes": [
+                    [
+                      [
+                        "conv2d_transpose_2",
+                        0,
+                        0,
+                        {}
+                      ]
+                    ]
+                  ]
+                },
+                {
+                  "class_name": "Conv2DTranspose",
+                  "config": {
+                    "name": "output_128x128",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 4,
+                    "kernel_size": [
+                      5,
+                      5
+                    ],
+                    "strides": [
+                      2,
+                      2
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                      1,
+                      1
+                    ],
+                    "groups": 1,
+                    "activation": "sigmoid",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                      "class_name": "GlorotUniform",
+                      "config": {
+                        "seed": null
+                      }
+                    },
+                    "bias_initializer": {
+                      "class_name": "Zeros",
+                      "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null,
+                    "output_padding": null
                   },
                   "name": "output_128x128",
                   "inbound_nodes": [
                     [
                       [
-                        "grow_128x128",
+                        "conv2d_transpose_3",
                         0,
                         0,
                         {}
@@ -976,7 +691,7 @@
               ],
               "input_layers": [
                 [
-                  "input_8x1",
+                  "input_16x1",
                   0,
                   0
                 ]
@@ -1027,10 +742,10 @@
         "class_name": "Adadelta",
         "config": {
           "name": "Adadelta",
-          "learning_rate": 0.0010000000474974513,
+          "learning_rate": 1.0,
           "decay": 0.0,
           "rho": 0.949999988079071,
-          "epsilon": 1e-07
+          "epsilon": 1e-06
         }
       }
     }
@@ -1044,7 +759,7 @@
         {
           "name": "activate_input/kernel",
           "shape": [
-            8,
+            16,
             64
           ],
           "dtype": "float32"
@@ -1057,83 +772,68 @@
           "dtype": "float32"
         },
         {
-          "name": "link_reshape_64x1/kernel",
-          "shape": [
-            64,
-            64
-          ],
-          "dtype": "float32"
-        },
-        {
-          "name": "link_reshape_64x1/bias",
-          "shape": [
-            64
-          ],
-          "dtype": "float32"
-        },
-        {
-          "name": "conv2d_1/kernel",
-          "shape": [
-            3,
-            3,
-            1,
-            8
-          ],
-          "dtype": "float32"
-        },
-        {
-          "name": "conv2d_1/bias",
-          "shape": [
-            8
-          ],
-          "dtype": "float32"
-        },
-        {
-          "name": "conv2d_2/kernel",
-          "shape": [
-            3,
-            3,
-            8,
-            16
-          ],
-          "dtype": "float32"
-        },
-        {
-          "name": "conv2d_2/bias",
-          "shape": [
-            16
-          ],
-          "dtype": "float32"
-        },
-        {
-          "name": "conv2d_3/kernel",
+          "name": "conv2d_transpose/kernel",
           "shape": [
             3,
             3,
             16,
-            32
+            1
           ],
           "dtype": "float32"
         },
         {
-          "name": "conv2d_3/bias",
+          "name": "conv2d_transpose/bias",
           "shape": [
-            32
+            16
           ],
           "dtype": "float32"
         },
         {
-          "name": "conv2d_4/kernel",
+          "name": "conv2d_transpose_1/kernel",
           "shape": [
             3,
             3,
             32,
-            64
+            16
           ],
           "dtype": "float32"
         },
         {
-          "name": "conv2d_4/bias",
+          "name": "conv2d_transpose_1/bias",
+          "shape": [
+            32
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "conv2d_transpose_2/kernel",
+          "shape": [
+            5,
+            5,
+            32,
+            32
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "conv2d_transpose_2/bias",
+          "shape": [
+            32
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "conv2d_transpose_3/kernel",
+          "shape": [
+            5,
+            5,
+            64,
+            32
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "conv2d_transpose_3/bias",
           "shape": [
             64
           ],
@@ -1144,15 +844,15 @@
           "shape": [
             5,
             5,
-            64,
-            1
+            4,
+            64
           ],
           "dtype": "float32"
         },
         {
           "name": "output_128x128/bias",
           "shape": [
-            1
+            4
           ],
           "dtype": "float32"
         },
@@ -1161,7 +861,7 @@
           "shape": [
             5,
             5,
-            1,
+            4,
             64
           ],
           "dtype": "float32"
@@ -1176,8 +876,8 @@
         {
           "name": "Convolution2/kernel",
           "shape": [
-            3,
-            3,
+            5,
+            5,
             64,
             32
           ],
@@ -1225,32 +925,17 @@
           "dtype": "float32"
         },
         {
-          "name": "link_flat_to_64x1/kernel",
+          "name": "output_16x1/kernel",
           "shape": [
-            128,
-            64
+            512,
+            16
           ],
           "dtype": "float32"
         },
         {
-          "name": "link_flat_to_64x1/bias",
+          "name": "output_16x1/bias",
           "shape": [
-            64
-          ],
-          "dtype": "float32"
-        },
-        {
-          "name": "output_8x1/kernel",
-          "shape": [
-            64,
-            8
-          ],
-          "dtype": "float32"
-        },
-        {
-          "name": "output_8x1/bias",
-          "shape": [
-            8
+            16
           ],
           "dtype": "float32"
         }
