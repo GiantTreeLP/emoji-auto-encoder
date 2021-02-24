@@ -2,9 +2,10 @@
 ![Python Version](https://img.shields.io/badge/Python-3.6%2B-blue.svg)
 [![Requirements Status](https://requires.io/github/GiantTreeLP/emoji-auto-encoder/requirements.svg?branch=master)](https://requires.io/github/GiantTreeLP/emoji-auto-encoder/requirements/?branch=master)
 
-Compresses Twemoji emojis down to 32 bytes (8 4-bit floating point numbers).
+Compresses Twemoji emojis down to 64 bytes (16 4-bit floating point numbers).
 
-This repository contains an already pretrained model for web use. You can use it as-is without training by hosting the `www` directory on a web server.
+This repository contains an already pretrained model for web use. You can use it as-is without training by hosting
+the `www` directory on a web server.
 
 To test the shipped model, just [follow this link](https://gianttreelp.github.io/emoji-auto-encoder/www/).
 
@@ -36,7 +37,7 @@ To prepare the trained model for use in the web, use the `tensorflowjs_converter
 If you have used `virtualenv` to create a virtual environment on Windows, you can find the `tensorflowjs_converter.exe` file in `<virtualenv directory>\Scripts\tensorflowjs_converter.exe`.  
 On other operating systems, the binary should already be in your $PATH and ready to be used.
 
-- `<tensorflowjs_converter> --input_format keras --output_format tensorflowjs logs\<latest directory>\model.h5 www`
+- `<tensorflowjs_converter> --input_format keras --output_format tfjs_layers_model logs\<latest directory>\model.h5 www`
 
 ## Use the model in your web browser
 
