@@ -36,6 +36,9 @@ def main():
         intermediate_images = (output * 255).astype('uint8')
         if len(output.shape) == 4:
             intermediate_images = np.swapaxes(intermediate_images, 0, 3)
+
+            os.makedirs(f"../test/encoder_{i}", exist_ok=True)
+
             for j in range(len(intermediate_images)):
                 im = intermediate_images[j]
                 imageio.imwrite(f"../test/encoder_{i}/{j}.png", im, "png")
@@ -47,6 +50,9 @@ def main():
         intermediate_images = (output * 255).astype('uint8')
         if len(output.shape) == 4:
             intermediate_images = np.swapaxes(intermediate_images, 0, 3)
+
+            os.makedirs(f"../test/decoder_{i}", exist_ok=True)
+
             for j in range(len(intermediate_images)):
                 im = intermediate_images[j]
                 imageio.imwrite(f"../test/decoder_{i}/{j}.png", im, "png")
