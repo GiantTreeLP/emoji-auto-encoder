@@ -4,12 +4,15 @@ import os
 from os import path
 from typing import Tuple
 
-import imageio
+import imageio.v3 as imageio
 import numpy as np
+import tensorflow as tf
 from tensorflow import keras
+from tensorflow.python.data import Dataset
+from tensorflow.python.data.experimental import AUTOTUNE
 from tensorflow.python.keras import Input, Model
-from tensorflow.python.keras.activations import relu, sigmoid, tanh
-from tensorflow.python.keras.layers import Conv2D, Conv2DTranspose, Dense, Flatten, Reshape
+from tensorflow.python.keras.activations import relu, tanh, softplus
+from tensorflow.python.keras.layers import Conv2D, Conv2DTranspose, Dense, Flatten, Reshape, MaxPooling2D
 from tensorflow.python.keras.losses import mean_squared_error
 from tensorflow.python.keras.optimizer_v2.adadelta import Adadelta
 
@@ -54,15 +57,18 @@ def create_model(vector_len: int) -> Tuple[Model, Model, Model]:
     return autoencoder, encoder, decoder
 
 
-def train_model(model: Model, images):
+def train_model(model: Model, images: list[np.ndarray]):
     time_str = datetime.datetime.now().strftime("%y-%m-%d_%H-%M-%S")
+
+    train_ds = Dataset.from_tensor_slices((images, images)).shuffle(len(images)).cache().prefetch(
+        buffer_size=AUTOTUNE).batch(len(images))
 
     callbacks = [
         keras.callbacks.TensorBoard(f'{LOGS_DIR}{time_str}'),
         TensorBoardImage(f'{LOGS_DIR}{time_str}', "Emojis", images, period=100),
         CheckpointCallback(f'{LOGS_DIR}{time_str}', period=100),
     ]
-    model.fit(images, images, epochs=100000, batch_size=len(images),
+    model.fit(train_ds, epochs=100000, batch_size=len(images),
               # validation_data=(images, images),
               callbacks=callbacks,
               verbose=0)
