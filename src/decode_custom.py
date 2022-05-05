@@ -4,7 +4,7 @@ import os
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
-import imageio
+import imageio.v3 as imageio
 import numpy as np
 
 from autoencoder import get_model
@@ -33,4 +33,4 @@ if __name__ == '__main__':
 
     os.makedirs("../emojis/twemoji/test", exist_ok=True)
     for i in range(len(prediction)):
-        imageio.imwrite(f"../emojis/twemoji/test/{names[i]}.png", prediction[i], 'png')
+        imageio.imwrite(f"../emojis/twemoji/test/{names[i]}.png", prediction[i], format_hint=".png")
