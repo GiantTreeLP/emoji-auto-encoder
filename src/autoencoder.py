@@ -96,6 +96,10 @@ def get_model(vector_len):
 
 
 def main():
+    for gpu in tf.config.experimental.list_physical_devices('GPU'):
+        tf.config.experimental.set_memory_growth(gpu, True)
+
+    tf.keras.mixed_precision.set_global_policy('mixed_float16')
     images = []
     for file in glob.glob("../emojis/twemoji/png/*.png"):
         images.append(imageio.imread(file))
