@@ -2,9 +2,9 @@ import glob
 import os
 from typing import Tuple
 
-import imageio
+import imageio.v3 as imageio
 import numpy as np
-from keract import get_activations
+from tensorflow.python.keras import Model
 
 from autoencoder import get_model
 
@@ -27,35 +27,36 @@ def load_images() -> Tuple[np.ndarray, list]:
 def main():
     os.makedirs("../test/", exist_ok=True)
     images, names = load_images()
-    whole_model, encoder, decoder = get_model(16)
+    _, encoder, decoder = get_model(16)
     image = images[76]
 
-    intermediate_output = get_activations(encoder, image)
-
-    for i, (key, output) in enumerate(intermediate_output.items(), start=1):
-        intermediate_images = (output * 255).astype('uint8')
-        if len(output.shape) == 4:
+    for i in range(len(encoder.layers)):
+        new_model = Model(inputs=encoder.input, outputs=encoder.layers[i].output)
+        intermediate_images = (new_model.predict(image) * 255).astype('uint8')
+        if len(intermediate_images.shape) == 4:
             intermediate_images = np.swapaxes(intermediate_images, 0, 3)
+            intermediate_images = intermediate_images.reshape(intermediate_images.shape[:3])
 
             os.makedirs(f"../test/encoder_{i}", exist_ok=True)
 
             for j in range(len(intermediate_images)):
                 im = intermediate_images[j]
-                imageio.imwrite(f"../test/encoder_{i}/{j}.png", im, "png")
+                imageio.imwrite(f"../test/encoder_{i}/{j}.png", im)
 
     value = encoder.predict(image)
 
-    intermediate_output = get_activations(decoder, value)
-    for i, (key, output) in enumerate(intermediate_output.items(), start=1):
-        intermediate_images = (output * 255).astype('uint8')
-        if len(output.shape) == 4:
+    for i in range(len(decoder.layers)):
+        new_model = Model(inputs=decoder.input, outputs=decoder.layers[i].output)
+        intermediate_images = (new_model.predict(value) * 255).astype('uint8')
+        if len(intermediate_images.shape) == 4:
             intermediate_images = np.swapaxes(intermediate_images, 0, 3)
+            intermediate_images = intermediate_images.reshape(intermediate_images.shape[:3])
 
             os.makedirs(f"../test/decoder_{i}", exist_ok=True)
 
             for j in range(len(intermediate_images)):
                 im = intermediate_images[j]
-                imageio.imwrite(f"../test/decoder_{i}/{j}.png", im, "png")
+                imageio.imwrite(f"../test/decoder_{i}/{j}.png", im)
 
 
 if __name__ == '__main__':
