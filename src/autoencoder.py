@@ -102,7 +102,9 @@ def main():
     images = np.array(images)
     images = np.reshape(images, (-1, 128, 128, 4))
     images = images.astype('float32') / 255
-    model, _, _ = get_model(16)
+    model, encoder, decoder = get_model(16)
+    encoder.summary()
+    decoder.summary()
     model.summary()
     train_model(model, images)
 
