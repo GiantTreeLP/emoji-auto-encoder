@@ -11,7 +11,7 @@ class CheckpointCallback(ModelCheckpoint):
                  save_weights_only=False,
                  mode='auto',
                  period=1):
-        super(CheckpointCallback, self).__init__(filepath + "/model.h5",
+        super(CheckpointCallback, self).__init__(filepath + "/model",
                                                  monitor,
                                                  verbose,
                                                  save_best_only,
@@ -40,7 +40,7 @@ class CheckpointCallback(ModelCheckpoint):
     def on_train_end(self, logs=None):
         super(CheckpointCallback, self).on_train_end(logs)
         self.logger.on_train_end(logs)
-        tfjs.converters.save_keras_model(self.model, self.dir)
+        tfjs.converters.tf_saved_model_conversion_v2.convert_tf_saved_model(self.model, self.dir)
 
     def on_batch_begin(self, batch, logs=None):
         super(CheckpointCallback, self).on_batch_begin(batch)

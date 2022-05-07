@@ -86,10 +86,10 @@ def get_model(vector_len):
         else:
             return model, encoder, decoder
 
-        if path.exists(f"{LOGS_DIR}{model_dir}/model.h5"):
+        if path.exists(f"{LOGS_DIR}{model_dir}/model"):
             try:
                 print(f"Loading model '{model_dir}'")
-                model.load_weights(f"{LOGS_DIR}{model_dir}/model.h5")
+                model.load_weights(f"{LOGS_DIR}{model_dir}/model")
             except ValueError:
                 pass
     return model, encoder, decoder
