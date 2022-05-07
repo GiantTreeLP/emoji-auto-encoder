@@ -3,17 +3,22 @@ const decoder = function (s) {
     s.renderEmoji = function () {
         const parameters = tf.tensor2d([s.parameters.map(p => p.value())]);
         const prediction = s.model.outputLayers[0].predict(parameters);
-        prediction.data()
-            .then(arr => {
-                parameters.dispose();
-                const b = tf.scalar(0);
-                const a = tf.reshape(arr, [128, 128, 4]);
-                const c = a.maximum(b);
+        prediction.data().then(arr => {
+            const b = tf.scalar(0);
+            const a = tf.reshape(arr, [128, 128, 4]);
+            const c = a.maximum(b);
+            const d = tf.scalar(1);
+            const e = c.minimum(d);
+
+            tf.browser.toPixels(e, s.canvas.canvas).then(() => {
                 a.dispose();
                 b.dispose();
-                tf.browser.toPixels(c, s.canvas.canvas).then(() => c.dispose());
+                c.dispose();
+                d.dispose();
+                e.dispose();
                 prediction.dispose();
             });
+        });
     };
 
     s.sliderChanged = async function () {
@@ -84,10 +89,16 @@ const denoiser = function (s) {
                     const b = tf.scalar(0);
                     const a = tf.reshape(arr, [128, 128, 4]);
                     const c = a.maximum(b);
-                    tf.browser.toPixels(c, s.outputImage.canvas).then(() => {
+                    const d = tf.scalar(1);
+                    const e = c.minimum(d);
+
+                    tf.browser.toPixels(e, s.outputImage.canvas).then(() => {
                         a.dispose();
                         b.dispose();
                         c.dispose();
+                        d.dispose();
+                        e.dispose();
+                        prediction.dispose();
                     });
                 });
             });
