@@ -16,7 +16,7 @@ idna==3.7
 imageio==2.9.0
 importlib-metadata==3.4.0
 keract==4.3.4
-Keras==2.4.3
+Keras==2.13.1
 Keras-Applications==1.0.8
 Keras-Preprocessing==1.1.2
 Markdown==3.3.3
