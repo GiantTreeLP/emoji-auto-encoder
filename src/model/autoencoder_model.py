@@ -6,7 +6,6 @@ from safetensors.torch import save_model, load_model
 from torch.nn import Module, Sequential, Conv2d, ReLU, Flatten, Dropout, Linear, Tanh, \
     Unflatten, Sigmoid, ConvTranspose2d
 from torch.nn.modules.loss import _Loss, MSELoss
-from torch.optim import Optimizer, Adadelta
 
 from model.train_state import TrainState
 
@@ -64,8 +63,8 @@ class AutoEncoder(Module):
             train_state.save(state_path)
 
     @staticmethod
-    def load(model_path: Path, optimizer_path: Path, device: torch.device) -> tuple[
-        _Loss, "AutoEncoder", Optimizer, TrainState]:
+    def load(model_path: Path, device: torch.device) -> tuple[
+        _Loss, "AutoEncoder", TrainState]:
         model = AutoEncoder(model_path)
         if model_path.exists():
             missing, unexpected = load_model(model, model_path)
@@ -75,10 +74,6 @@ class AutoEncoder(Module):
                 model = AutoEncoder(model_path)
         model = model.to(device)
         loss_function = MSELoss().to(device)
-        optimizer = Adadelta(params=model.parameters())
-
-        if optimizer_path.exists():
-            optimizer.load_state_dict(torch.load(optimizer_path))
 
         state_path = model_path.with_suffix(".state")
         if state_path.exists():
@@ -89,4 +84,4 @@ class AutoEncoder(Module):
             print(f"Starting training from epoch {train_state.epoch} with loss {train_state.loss:.4f}")
         print(model)
         print("Parameters requiring training:", sum(p.numel() for p in model.parameters() if p.requires_grad))
-        return loss_function, model, optimizer, train_state
+        return loss_function, model, train_state
