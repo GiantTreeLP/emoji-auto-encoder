@@ -1,13 +1,15 @@
 import glob
 
-import imageio
+import PIL.Image as Image
 import numpy as np
 
 
 def determine_deviation(original: np.ndarray, glob_str: str):
     compressed_images = []
     for file in glob.glob(glob_str):
-        compressed_images.append(imageio.imread(file))
+        with open(file, "rb") as f:
+            image = Image.open(f).load()
+        compressed_images.append(image)
     compressed_images = np.reshape(np.array(compressed_images), (-1, 128, 128, 4))
     compressed_images = compressed_images.astype('float32') / 255
 
