@@ -4,6 +4,7 @@ import sys
 from multiprocessing.pool import Pool
 from typing import List, Callable
 from urllib import request
+from urllib.error import URLError
 
 
 def create_twitter_url(emoji: str):
@@ -18,7 +19,8 @@ def download_emoji(url_lambda: Callable[[str], str], emoji: str, directory: str,
     save_location = f"{directory}{emoji}.{extension}"
     if os.path.exists(save_location) and os.path.isfile(save_location):
         return
-    from urllib.error import URLError
+
+    url = ""
     try:
         url = url_lambda(emoji)
         print(f"Downloading {url} -> {save_location}")

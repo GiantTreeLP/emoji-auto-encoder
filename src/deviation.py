@@ -23,7 +23,9 @@ def main():
     images = []
     for file in glob.glob("../emojis/twemoji/png/*.png"):
         print(file)
-        images.append(imageio.imread(file))
+        with open(file, "rb") as f:
+            image = Image.open(f).load()
+        images.append(image)
     images = np.array(images)
     images = np.reshape(images, (-1, 128, 128, 4))
     images = images.astype('float32') / 255
