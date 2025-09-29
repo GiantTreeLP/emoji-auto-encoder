@@ -192,5 +192,6 @@ class Trainer:
                 self.scaler.step(self.optimizer)
                 self.scaler.update()
 
-            self._after_epoch(epoch, loss.item())
-            epochs.set_postfix({"Loss": loss.item()})
+            loss = loss.item()
+            self._after_epoch(epoch, loss)
+            epochs.set_postfix({"Loss": loss})
