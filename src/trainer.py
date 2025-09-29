@@ -1,3 +1,4 @@
+from collections import defaultdict
 from os import PathLike
 from pathlib import Path
 
@@ -112,7 +113,16 @@ class Trainer:
         print(f"Using device: {device}")
         self.model.to(device)
         self.loss_function.to(device)
+
+        self.optimizer.state = defaultdict(dict,
+                                           {k.to(device): {
+                                               k2: v.to(device) for k2, v in d.items()
+                                           } for k, d in self.optimizer.state.items()})
+
+        scaler_state = self.scaler.state_dict()
         self.scaler = GradScaler(device.type)
+        self.scaler.load_state_dict(scaler_state)
+
         self._prepare_dataset(device)
 
     def _prepare_dataset(self, device: torch.device):
