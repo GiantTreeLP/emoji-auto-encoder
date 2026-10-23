@@ -23,7 +23,7 @@ Markdown==3.8.1
 numpy==1.22.0
 oauthlib==4.0.0
 opt-einsum==3.3.0
-Pillow==12.3.0
+Pillow==13.0.0
 protobuf==5.29.6
 pyasn1==0.6.4
 pyasn1-modules==0.2.8
